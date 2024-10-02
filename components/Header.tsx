@@ -35,7 +35,7 @@ export function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
   }, []);
 
   return (
-    <header className="py-6">
+    <header className="py-6 animate-slide-down">
       <nav className="flex items-center justify-between relative">
         <Link href="/">
           <span className="text-2xl font-bold text-gray-800 dark:text-white">K</span>

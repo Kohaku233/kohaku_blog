@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "./Header";
 
 interface LayoutProps {
@@ -8,15 +8,30 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+  useEffect(() => {
+    // 检查本地存储或系统偏好
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    setIsDarkMode(savedTheme === 'dark' || (!savedTheme && prefersDark));
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    localStorage.setItem('theme', newMode ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark', newMode);
+  };
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDarkMode);
+  }, [isDarkMode]);
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? "dark" : ""}`}>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="max-w-[64rem] mx-auto px-4">
-          <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-          <main className="py-12">{children}</main>
-        </div>
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-[64rem] mx-auto px-4">
+        <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+        <main className="py-12 animate-slide-up">{children}</main>
       </div>
     </div>
   );

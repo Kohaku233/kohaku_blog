@@ -15,6 +15,7 @@ export interface Blog {
   content: string;
   created_at: string;
   updated_at: string;
+  views: number; // 添加这行
 }
 
 export const blogApi = {
