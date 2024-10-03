@@ -23,7 +23,10 @@ export function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsMenuOpen(false);
       }
     };
@@ -38,7 +41,9 @@ export function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
     <header className="py-6 animate-slide-down">
       <nav className="flex items-center justify-between relative">
         <Link href="/">
-          <span className="text-2xl font-bold text-gray-800 dark:text-white">K</span>
+          <span className="text-2xl font-bold text-gray-800 dark:text-white">
+            K
+          </span>
         </Link>
         <div className="hidden sm:flex items-center space-x-4">
           {navLinks.map((link) => (

@@ -15,7 +15,7 @@ export interface Blog {
   content: string;
   created_at: string;
   updated_at: string;
-  views: number; // 添加这行
+  views: number;
 }
 
 export const blogApi = {
@@ -31,19 +31,5 @@ export const blogApi = {
     return response.data.data;
   },
 
-  // 创建博客
-  createBlog: async (title: string, content: string): Promise<number> => {
-    const response = await api.post('/blogs', { title, content });
-    return response.data.blogId;
-  },
-
-  // 更新博客
-  updateBlog: async (id: number, title: string, content: string): Promise<void> => {
-    await api.put(`/blogs/${id}`, { title, content });
-  },
-
-  // 删除博客
-  deleteBlog: async (id: number): Promise<void> => {
-    await api.delete(`/blogs/${id}`);
-  },
+  // 其他方法保持不变...
 };

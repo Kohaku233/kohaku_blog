@@ -5,6 +5,7 @@ import { PenTool, Eye } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import { blogApi, Blog } from "@/utils/api";
 import { Layout } from "./Layout";
+import Link from 'next/link';
 
 export function PersonalWebsite() {
   const [latestBlogs, setLatestBlogs] = useState<Blog[]>([]);
@@ -50,25 +51,27 @@ export function PersonalWebsite() {
         <h2 className="text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white">最新文章</h2>
         <div className="grid sm:grid-cols-2 gap-8">
           {latestBlogs.map((blog) => (
-            <div key={blog.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                  <PenTool className="h-4 w-4 mr-1" />
-                  <span>博客</span>
-                </div>
-                <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
-                  <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                  <div className="flex items-center">
-                    <Eye className="h-4 w-4 mr-1" />
-                    <span>{blog.views || 0} 次浏览</span>
+            <Link href={`/blog/${blog.id}`} key={blog.id} passHref>
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300">
+                <div className="p-6">
+                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+                    <PenTool className="h-4 w-4 mr-1" />
+                    <span>博客</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <span>{new Date(blog.created_at).toLocaleDateString()}</span>
+                    <div className="flex items-center">
+                      <Eye className="h-4 w-4 mr-1" />
+                      <span>{blog.views || 0} 次浏览</span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{blog.title}</h3>
+                  <div className="text-gray-600 dark:text-gray-400 mb-4 prose dark:prose-invert">
+                    <ReactMarkdown>{blog.content.substring(0, 150) + (blog.content.length > 150 ? '...' : '')}</ReactMarkdown>
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{blog.title}</h3>
-                <div className="text-gray-600 dark:text-gray-400 mb-4 prose dark:prose-invert">
-                  <ReactMarkdown>{blog.content.substring(0, 150) + (blog.content.length > 150 ? '...' : '')}</ReactMarkdown>
-                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
