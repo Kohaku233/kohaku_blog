@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Sun, Moon, Menu, X } from "lucide-react";
 
 const navLinks = [
-  { href: "/", text: "Home" },
   { href: "/blog", text: "Blog" },
   { href: "/dashboard", text: "Dashboard" },
   { href: "/projects", text: "Projects" },
