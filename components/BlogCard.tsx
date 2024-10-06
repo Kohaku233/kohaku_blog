@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PenTool, Eye } from "lucide-react";
+import { LuPenTool, LuEye } from "react-icons/lu";
 import ReactMarkdown from "react-markdown";
 import { Blog } from "@/lib/api";
 
@@ -15,7 +15,7 @@ export function BlogCard({ blog }: { blog: Blog }) {
             className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-4 pb-2 
                   border-b border-gray-200 dark:border-gray-700"
           >
-            <PenTool className="h-4 w-4 mr-1" />
+            <LuPenTool className="h-4 w-4 mr-1" />
             <span>Blog</span>
           </div>
           <div
@@ -24,7 +24,7 @@ export function BlogCard({ blog }: { blog: Blog }) {
           >
             <span>{new Date(blog.created_at).toLocaleDateString()}</span>
             <div className="flex items-center">
-              <Eye className="h-4 w-4 mr-1" />
+              <LuEye className="h-4 w-4 mr-1" />
               <span>{blog.views || 0} views</span>
             </div>
           </div>

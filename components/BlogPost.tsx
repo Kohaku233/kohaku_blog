@@ -1,6 +1,5 @@
-"use client";
 import ReactMarkdown from "react-markdown";
-import { Blog } from "@/utils/api";
+import { Blog } from "@/lib/api";
 
 interface BlogPostProps {
   blog: Blog;

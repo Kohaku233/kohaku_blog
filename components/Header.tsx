@@ -1,99 +1,121 @@
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
-import { Sun, Moon, Menu, X } from "lucide-react";
+"use client";
+
+import { Dock, DockIcon } from "@/components/ui/dock";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
+import {
+  LuBox,
+  LuHome,
+  LuMoon,
+  LuPenTool,
+  LuSun,
+  LuUser,
+} from "react-icons/lu";
+import { FaGithub, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+
 import { useTheme } from "next-themes";
+import Link from "next/link";
 
 const navLinks = [
-  { href: "/blog", text: "Blog" },
-  { href: "/dashboard", text: "Dashboard" },
-  { href: "/projects", text: "Projects" },
-  { href: "/about", text: "About" },
+  { href: "/", icon: LuHome, label: "Home" },
+  { href: "/blog", icon: LuPenTool, label: "Blog" },
+  { href: "/projects", icon: LuBox, label: "Projects" },
+  { href: "/about", icon: LuUser, label: "About" },
+];
+const socialLinks = [
+  {
+    href: "https://github.com/Kohaku233",
+    icon: FaGithub,
+    label: "Github",
+  },
+  { href: "https://x.com/AlwaysImproved", icon: FaXTwitter, label: "X" },
+  {
+    href: "https://www.youtube.com/@alwaysimproved5739",
+    icon: FaYoutube,
+    label: "Youtube",
+  },
 ];
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const { theme, setTheme } = useTheme();
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const toggleDarkMode = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   return (
-    <header className="py-6">
-      <nav className="flex items-center justify-between relative">
-        <Link href="/">
-          <span className="text-2xl font-bold text-gray-800 dark:text-white">
-            K
-          </span>
-        </Link>
-        <div className="hidden sm:flex items-center space-x-4">
+    <header className="fixed bottom-0 left-0 right-0 flex justify-center p-4 z-50">
+      <TooltipProvider>
+        <Dock direction="middle">
           {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-            >
-              {link.text}
-            </Link>
-          ))}
-        </div>
-        <div className="flex items-center">
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 mr-2"
-          >
-            {theme === 'dark' ? (
-              <Sun className="h-5 w-5 text-gray-800 dark:text-gray-200" />
-            ) : (
-              <Moon className="h-5 w-5 text-gray-800 dark:text-gray-200" />
-            )}
-          </button>
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={toggleMenu}
-              className="sm:hidden p-2 rounded-full bg-gray-200 dark:bg-gray-700"
-            >
-              {isMenuOpen ? (
-                <X className="h-5 w-5 text-gray-800 dark:text-gray-200" />
-              ) : (
-                <Menu className="h-5 w-5 text-gray-800 dark:text-gray-200" />
-              )}
-            </button>
-            {isMenuOpen && (
-              <div className="sm:hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10">
-                {navLinks.map((link) => (
+            <DockIcon key={link.label}>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <Link
-                    key={link.href}
                     href={link.href}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    aria-label={link.label}
+                    className={cn(
+                      buttonVariants({ variant: "ghost", size: "icon" }),
+                      " rounded-full"
+                    )}
                   >
-                    {link.text}
+                    <link.icon className="size-5" />
+                    <span className="sr-only">{link.label}</span>
                   </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </nav>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{link.label}</p>
+                </TooltipContent>
+              </Tooltip>
+            </DockIcon>
+          ))}
+          <Separator orientation="vertical" className="h-full py-2" />
+          {socialLinks.map((link) => (
+            <DockIcon key={link.label}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href={link.href}
+                    target="_blank"
+                    aria-label={link.label}
+                    className={cn(
+                      buttonVariants({ variant: "ghost", size: "icon" }),
+                      " rounded-full"
+                    )}
+                  >
+                    <link.icon className="size-5" />
+                    <span className="sr-only">{link.label}</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{link.label}</p>
+                </TooltipContent>
+              </Tooltip>
+            </DockIcon>
+          ))}
+          <Separator orientation="vertical" className="h-full py-2" />
+          <DockIcon>
+            <div className="relative w-5 h-5" onClick={toggleTheme}>
+              <LuSun
+                className="absolute w-full h-full transition-all duration-300 
+                       rotate-0 scale-100 dark:-rotate-90 dark:scale-0"
+              />
+              <LuMoon
+                className="absolute w-full h-full transition-all duration-300 
+                       rotate-90 scale-0 dark:rotate-0 dark:scale-100"
+              />
+              <span className="sr-only">Toggle theme</span>
+            </div>
+            <span className="sr-only">Toggle theme</span>
+          </DockIcon>
+        </Dock>
+      </TooltipProvider>
     </header>
   );
 }

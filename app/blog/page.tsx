@@ -1,22 +1,31 @@
-import Link from 'next/link';
-import { getBlogPosts } from '@/lib/api';
+import Link from 'next/link'
+import { getBlogPosts } from '@/lib/api'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 export default async function BlogPage() {
-  const posts = await getBlogPosts();
+  const blogs = await getBlogPosts()
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-4">博客文章</h1>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.id} className="mb-4">
-            <Link href={`/blog/${post.id}`} className="text-blue-500 hover:underline">
-              <h2 className="text-xl font-semibold">{post.title}</h2>
-            </Link>
-            <p className="text-gray-600">{post.content.substring(0, 150)}...</p>
-          </li>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold mb-8">Blog</h1>
+      <div className="grid gap-6 sm:grid-cols-2">
+        {blogs.map((blog) => (
+          <Card key={blog.id}>
+            <CardHeader>
+              <CardTitle>{blog.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">{blog.content.substring(0, 100)}...</p>
+            </CardContent>
+            <CardFooter>
+              <Button asChild>
+                <Link href={`/blog/${blog.id}`}>Read more</Link>
+              </Button>
+            </CardFooter>
+          </Card>
         ))}
-      </ul>
+      </div>
     </div>
-  );
+  )
 }
