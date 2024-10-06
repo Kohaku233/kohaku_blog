@@ -1,4 +1,5 @@
-import { BlogPost } from "@/components/BlogPost";
+import { getBlogPost } from '@/lib/api';
+import { BlogPost } from '@/components/BlogPost';
 
 interface BlogPageProps {
   params: {
@@ -6,7 +7,9 @@ interface BlogPageProps {
   };
 }
 
-export default function BlogPage({ params }: BlogPageProps) {
+export default async function BlogPage({ params }: BlogPageProps) {
   const { id } = params;
-  return <BlogPost id={parseInt(id, 10)} />;
+  const post = await getBlogPost(parseInt(id, 10));
+  
+  return <BlogPost blog={post} />;
 }

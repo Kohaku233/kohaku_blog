@@ -1,40 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
-import { blogApi, Blog } from "@/utils/api";
 import ReactMarkdown from "react-markdown";
+import { Blog } from "@/utils/api";
 
 interface BlogPostProps {
-  id: number;
+  blog: Blog;
 }
 
-export function BlogPost({ id }: BlogPostProps) {
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBlog = async () => {
-      setIsLoading(true);
-      try {
-        const fetchedBlog = await blogApi.getBlogById(id);
-        setBlog(fetchedBlog);
-      } catch (error) {
-        console.error("获取博客时出错:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchBlog();
-  }, [id]);
-
-  if (isLoading) {
-    return <div>加载中...</div>;
-  }
-
-  if (!blog) {
-    return <div>博客未找到</div>;
-  }
-
+export function BlogPost({ blog }: BlogPostProps) {
   return (
     <article className="max-w-3xl mx-auto">
       <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">

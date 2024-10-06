@@ -1,33 +1,8 @@
-"use client";
+import { BlogCard } from '@/components/BlogCard';
+import { getBlogPosts } from '@/lib/api';
 
-import { useState, useEffect } from "react";
-import { PenTool, Eye } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import { blogApi, Blog } from "@/utils/api";
-import Link from "next/link";
-
-export default function HomePage() {
-  const [latestBlogs, setLatestBlogs] = useState<Blog[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchLatestBlogs = async () => {
-      try {
-        const blogs = await blogApi.getAllBlogs();
-        setLatestBlogs(blogs.slice(0, 2));
-      } catch (error) {
-        console.error("Error fetching blogs:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchLatestBlogs();
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+export default async function HomePage() {
+  const latestBlogs = await getBlogPosts();
 
   return (
     <div>
@@ -56,35 +31,8 @@ export default function HomePage() {
           Latest Articles
         </h2>
         <div className="grid sm:grid-cols-2 gap-8">
-          {latestBlogs.map((blog) => (
-            <Link href={`/blog/${blog.id}`} key={blog.id}>
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300">
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                    <PenTool className="h-4 w-4 mr-1" />
-                    <span>Blog</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
-                    <span>
-                      {new Date(blog.created_at).toLocaleDateString()}
-                    </span>
-                    <div className="flex items-center">
-                      <Eye className="h-4 w-4 mr-1" />
-                      <span>{blog.views || 0} views</span>
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
-                    {blog.title}
-                  </h3>
-                  <div className="text-gray-600 dark:text-gray-400 mb-4 prose dark:prose-invert">
-                    <ReactMarkdown>
-                      {blog.content.substring(0, 150) +
-                        (blog.content.length > 150 ? "..." : "")}
-                    </ReactMarkdown>
-                  </div>
-                </div>
-              </div>
-            </Link>
+          {latestBlogs.slice(0, 2).map((blog) => (
+            <BlogCard key={blog.id} blog={blog} />
           ))}
         </div>
       </section>
