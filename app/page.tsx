@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { PenTool, Eye } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { blogApi, Blog } from "@/utils/api";
-import { Layout } from "@/components/Layout";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -27,19 +26,15 @@ export default function HomePage() {
   }, []);
 
   if (isLoading) {
-    return (
-      <Layout>
-        <div>Loading...</div>
-      </Layout>
-    );
+    return <div>Loading...</div>;
   }
 
   return (
-    <Layout>
+    <div>
       <div className="flex flex-col sm:flex-row items-start justify-between">
         <div className="sm:w-1/2 pr-8">
           <h1 className="text-4xl sm:text-6xl font-bold mb-4 text-gray-900 dark:text-white">
-            I'm Kohaku
+            I&apos;m Kohaku
           </h1>
           <p className="text-xl sm:text-2xl mb-4 text-gray-800 dark:text-gray-200">
             An amateur programming enthusiast and long-term practitioner.
@@ -93,6 +88,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-    </Layout>
+    </div>
   );
 }

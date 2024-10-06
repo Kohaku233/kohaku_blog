@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Layout } from "./Layout";
+"use client";
+import { useState, useEffect } from "react";
 import { blogApi, Blog } from "@/utils/api";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 
 interface BlogPostProps {
   id: number;
@@ -28,24 +28,24 @@ export function BlogPost({ id }: BlogPostProps) {
   }, [id]);
 
   if (isLoading) {
-    return <Layout><div>加载中...</div></Layout>;
+    return <div>加载中...</div>;
   }
 
   if (!blog) {
-    return <Layout><div>博客未找到</div></Layout>;
+    return <div>博客未找到</div>;
   }
 
   return (
-    <Layout>
-      <article className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">{blog.title}</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
-          最后修改时间: {new Date(blog.updated_at).toLocaleString()}
-        </p>
-        <div className="prose dark:prose-invert max-w-none">
-          <ReactMarkdown>{blog.content}</ReactMarkdown>
-        </div>
-      </article>
-    </Layout>
+    <article className="max-w-3xl mx-auto">
+      <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+        {blog.title}
+      </h1>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
+        最后修改时间: {new Date(blog.updated_at).toLocaleString()}
+      </p>
+      <div className="prose dark:prose-invert max-w-none">
+        <ReactMarkdown>{blog.content}</ReactMarkdown>
+      </div>
+    </article>
   );
 }
