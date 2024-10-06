@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Sun, Moon, Menu, X } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const navLinks = [
   { href: "/blog", text: "Blog" },
@@ -9,14 +10,10 @@ const navLinks = [
   { href: "/about", text: "About" },
 ];
 
-interface HeaderProps {
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
-}
-
-export function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
+export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { theme, setTheme } = useTheme();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -35,6 +32,10 @@ export function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const toggleDarkMode = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   return (
     <header className="py-6">
@@ -60,7 +61,7 @@ export function Header({ isDarkMode, toggleDarkMode }: HeaderProps) {
             onClick={toggleDarkMode}
             className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 mr-2"
           >
-            {isDarkMode ? (
+            {theme === 'dark' ? (
               <Sun className="h-5 w-5 text-gray-800 dark:text-gray-200" />
             ) : (
               <Moon className="h-5 w-5 text-gray-800 dark:text-gray-200" />
