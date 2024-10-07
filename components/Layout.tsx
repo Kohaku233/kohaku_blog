@@ -9,7 +9,7 @@ export function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-[64rem] mx-auto px-4">
         <Header />
-        <main className="py-12">{children}</main>
+        <main className="py-24">{children}</main>
       </div>
     </div>
   );
