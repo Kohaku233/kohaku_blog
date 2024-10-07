@@ -1,13 +1,15 @@
 "use client";
 
 import { Dock, DockIcon } from "@/components/ui/dock";
+import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Separator } from "@/components/ui/separator";
+import { FaGithub, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import {
   LuBox,
   LuHome,
@@ -16,11 +18,6 @@ import {
   LuSun,
   LuUser,
 } from "react-icons/lu";
-import { FaGithub, FaYoutube } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
 
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -50,23 +47,22 @@ export function Header() {
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   return (
-    <header className="fixed bottom-0 left-0 right-0 flex justify-center p-4 z-50">
+    <header className="fixed bottom-0 left-0 right-0 flex justify-center p-2 sm:p-4 z-50">
       <TooltipProvider>
-        <Dock direction="middle">
+        <Dock
+          magnification={60}
+          distance={100}
+          className="scale-75 sm:scale-100 transition-transform duration-300"
+        >
           {navLinks.map((link) => (
-            <DockIcon key={link.label}>
+            <DockIcon
+              key={link.label}
+              className="bg-black/10 dark:bg-white/10 p-2 sm:p-3"
+            >
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link
-                    href={link.href}
-                    aria-label={link.label}
-                    className={cn(
-                      buttonVariants({ variant: "ghost", size: "icon" }),
-                      " rounded-full"
-                    )}
-                  >
-                    <link.icon className="size-5" />
-                    <span className="sr-only">{link.label}</span>
+                  <Link href={link.href} aria-label={link.label}>
+                    <link.icon className="size-full" />
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -77,20 +73,18 @@ export function Header() {
           ))}
           <Separator orientation="vertical" className="h-full py-2" />
           {socialLinks.map((link) => (
-            <DockIcon key={link.label}>
+            <DockIcon
+              key={link.label}
+              className="bg-black/10 dark:bg-white/10 p-2 sm:p-3"
+            >
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
                     href={link.href}
                     target="_blank"
                     aria-label={link.label}
-                    className={cn(
-                      buttonVariants({ variant: "ghost", size: "icon" }),
-                      " rounded-full"
-                    )}
                   >
-                    <link.icon className="size-5" />
-                    <span className="sr-only">{link.label}</span>
+                    <link.icon className="size-full" />
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -100,19 +94,24 @@ export function Header() {
             </DockIcon>
           ))}
           <Separator orientation="vertical" className="h-full py-2" />
-          <DockIcon>
-            <div className="relative w-5 h-5" onClick={toggleTheme}>
-              <LuSun
-                className="absolute w-full h-full transition-all duration-300 
-                       rotate-0 scale-100 dark:-rotate-90 dark:scale-0"
-              />
-              <LuMoon
-                className="absolute w-full h-full transition-all duration-300 
-                       rotate-90 scale-0 dark:rotate-0 dark:scale-100"
-              />
-              <span className="sr-only">Toggle theme</span>
-            </div>
-            <span className="sr-only">Toggle theme</span>
+          <DockIcon className="bg-black/10 dark:bg-white/10 p-1 sm:p-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="relative w-5 h-5" onClick={toggleTheme}>
+                  <LuSun
+                    className="absolute w-full h-full transition-all duration-300 
+                           rotate-0 scale-100 dark:-rotate-90 dark:scale-0"
+                  />
+                  <LuMoon
+                    className="absolute w-full h-full transition-all duration-300 
+                           rotate-90 scale-0 dark:rotate-0 dark:scale-100"
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>切换主题</p>
+              </TooltipContent>
+            </Tooltip>
           </DockIcon>
         </Dock>
       </TooltipProvider>
