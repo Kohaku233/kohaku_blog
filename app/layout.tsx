@@ -5,15 +5,16 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import { Layout } from "@/components/Layout";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+const ultralightitalic = localFont({
+  src: "./fonts/ultralightitalic.woff",
+  variable: "--font-ultralight-italic",
+  weight: "300",  // 或者其他适合的权重
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const FOTMatisseProUB = localFont({
+  src: "./fonts/FOTMatisseProUB.woff",
+  variable: "--font-fot-matisse-pro-ub",
+  weight: "700",  // 或者其他适合的权重
 });
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${ultralightitalic.variable} ${FOTMatisseProUB.variable} antialiased`}
       >
         <ThemeProvider attribute="class">
           <Layout>{children}</Layout>
