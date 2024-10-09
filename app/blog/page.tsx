@@ -7,7 +7,7 @@ export default async function BlogPage() {
   const blogs = await getBlogPosts();
 
   return (
-    <div className="max-w-[688px] mx-auto ">
+    <div className="max-w-[688px] mx-auto px-4 sm:px-6 lg:px-8">
       <h1 className="text-4xl font-bold mb-6">Writing</h1>
       <p className="text-lg text-gray-600 dark:text-gray-300 mb-12 text-balance">
         脑洞大开、探索性文章和操作指南。我写各种主题，如设计系统、
@@ -20,8 +20,8 @@ export default async function BlogPage() {
             className="border-gray-200 dark:border-gray-700 pb-8 last:border-b-0"
           >
             <Link href={`/blog/${blog.id}`} className="block group">
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-2xl font-semibold group-hover:text-[#C3000F] transition-colors">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2">
+                <h2 className="text-2xl font-semibold group-hover:text-[#C3000F] transition-colors mb-1 sm:mb-0">
                   {blog.title}
                 </h2>
                 <time className="text-lg text-gray-500 dark:text-gray-400">
