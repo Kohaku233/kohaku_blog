@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getBlogPosts } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
 
 export default async function BlogPage() {
   const blogs = await getBlogPosts();
@@ -27,9 +28,11 @@ export default async function BlogPage() {
                   {formatDate(blog.created_at)}
                 </time>
               </div>
-              <p className="text-lg text-gray-600 dark:text-gray-300">
-                {blog.content.substring(0, 150)}...
-              </p>
+              <div className="text-lg text-gray-600 dark:text-gray-300">
+                <ReactMarkdown>
+                  {blog.content.substring(0, 150) + "..."}
+                </ReactMarkdown>
+              </div>
             </Link>
           </article>
         ))}

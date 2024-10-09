@@ -14,7 +14,7 @@ export function BlogPost({ blog }: BlogPostProps) {
       <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
         最后修改时间: {new Date(blog.updated_at).toLocaleString()}
       </p>
-      <div className="prose dark:prose-invert max-w-none">
+      <div className="text-lg text-gray-600 dark:text-gray-300 prose dark:prose-invert max-w-none">
         <ReactMarkdown>{blog.content}</ReactMarkdown>
       </div>
     </article>
