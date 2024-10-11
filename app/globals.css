@@ -68,4 +68,17 @@
   }
 }
 
+@keyframes blurAnimation {
+  0% {
+    filter: blur(10px);
+  }
+  100% {
+    filter: blur(0);
+  }
+}
+
+.blur-animation {
+  animation: blurAnimation 700ms ease-out forwards;
+}
+
 

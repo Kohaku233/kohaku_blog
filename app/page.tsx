@@ -1,11 +1,7 @@
-import Link from "next/link";
 import Image from "next/image";
-// import { getBlogPosts } from "@/lib/api";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 
 export default async function HomePage() {
-  // const latestBlogs = await getBlogPosts();
-
   return (
     <div className="container mx-auto px-4 py-8">
       <CardContainer className="inter-var">
@@ -28,9 +24,9 @@ export default async function HomePage() {
             <Image
               priority
               src="/img/tokyo_tower.jpg"
-              height="1000"
-              width="1000"
-              className=" w-full object-cover rounded-xl group-hover/card:shadow-xl"
+              height={1000}
+              width={1000}
+              className="w-full object-cover rounded-xl group-hover/card:shadow-xl blur-animation"
               alt="thumbnail"
             />
           </CardItem>
