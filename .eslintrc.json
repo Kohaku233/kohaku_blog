@@ -1,4 +1,12 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"],
-  "ignorePatterns": ["myblog_backend/**/*"]
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
+  "ignorePatterns": [
+    "myblog_backend/**/*"
+  ],
+  "rules": {
+    "@typescript-eslint/no-var-requires": "off"
+  }
 }
