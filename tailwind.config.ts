@@ -11,9 +11,6 @@ const config: Config = {
   future: {
     hoverOnlyWhenSupported: true,
   },
-  experimental: {
-    optimizeUniversalDefaults: true,
-  },
   theme: {
     extend: {
       borderRadius: {

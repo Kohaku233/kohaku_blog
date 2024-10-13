@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { getBlogPosts } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
+import { getSortedPostsData, PostData } from '@/lib/posts';
+
 import ReactMarkdown from "react-markdown";
 
 export default async function BlogPage() {
-  const blogs = await getBlogPosts();
+  const allPostsData: PostData[] = getSortedPostsData();
 
   return (
     <div className="max-w-[688px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,7 +15,7 @@ export default async function BlogPage() {
         可访问性、创业公司和用户/开发者体验。
       </p>
       <div className="space-y-8">
-        {blogs.map((blog) => (
+        {allPostsData.map((blog) => (
           <article
             key={blog.id}
             className="border-gray-200 dark:border-gray-700 pb-8 last:border-b-0"
@@ -25,12 +26,12 @@ export default async function BlogPage() {
                   {blog.title}
                 </h2>
                 <time className="text-lg text-gray-500 dark:text-gray-400">
-                  {formatDate(blog.created_at)}
+                  {formatDate(blog.date)}
                 </time>
               </div>
               <div className="text-lg text-gray-600 dark:text-gray-300">
                 <ReactMarkdown>
-                  {blog.content.substring(0, 150) + "..."}
+                  {blog.summary}
                 </ReactMarkdown>
               </div>
             </Link>
