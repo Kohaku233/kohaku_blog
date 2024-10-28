@@ -26,7 +26,7 @@ const navLinks = [
   { href: "/", icon: LuHome, label: "Home" },
   { href: "/blog", icon: LuPenTool, label: "Blog" },
   { href: "/projects", icon: LuBox, label: "Projects" },
-  { href: "/about", icon: LuUser, label: "About" },
+  { href: "/gallery", icon: LuUser, label: "Picture" },
 ];
 const socialLinks = [
   {
