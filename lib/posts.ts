@@ -17,7 +17,7 @@ export interface PostData {
 export function getSortedPostsData(): PostData[] {
   const fileNames = fs.readdirSync(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
-    const id = fileName.replace(/\.md$/, '');
+    const id = encodeURIComponent(fileName.replace(/\.md$/, ''));
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
 
@@ -26,8 +26,8 @@ export function getSortedPostsData(): PostData[] {
 
     return {
       id,
-      ...data,
-    } as PostData;
+      ...(data as Omit<PostData, 'id'>),
+    };
   });
 
   return allPostsData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -38,23 +38,23 @@ export function getAllPostIds() {
   const fileNames = fs.readdirSync(postsDirectory);
   return fileNames.map((fileName) => ({
     params: {
-      slug: fileName.replace(/\.md$/, ''),
+      slug: encodeURIComponent(fileName.replace(/\.md$/, '')),
     },
   }));
 }
 
 // 获取单篇文章的完整数据
 export async function getPostData(id: string): Promise<PostData> {
-  const fullPath = path.join(postsDirectory, `${id}.md`);
+  const decodedId = decodeURIComponent(id);
+  const fullPath = path.join(postsDirectory, `${decodedId}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
 
   // 解析 Markdown 元数据和内容
   const { data, content } = matter(fileContents);
 
-
   return {
     id,
     content,
-    ...data,
-  } as PostData;
+    ...(data as Omit<PostData, 'id' | 'content'>),
+  };
 }
