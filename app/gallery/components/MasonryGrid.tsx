@@ -13,7 +13,7 @@ export default function MasonryGrid({ images }: MasonryGridProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const breakpointColumns = {
-    default: 3,
+    default: 2,
     1100: 2,
     700: 1
   };
@@ -38,7 +38,7 @@ export default function MasonryGrid({ images }: MasonryGridProps) {
               height={0}
               className="w-full h-auto hover:scale-105 transition-transform duration-300 rounded-lg"
               style={{ height: 'auto' }}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 768px) 100vw, 50vw"
               loading="lazy"
               quality={85}
             />
@@ -72,7 +72,6 @@ export default function MasonryGrid({ images }: MasonryGridProps) {
                 />
               </svg>
             </button>
-            {/* 使用原生 img 标签来显示原始图片 */}
             <img
               src={selectedImage}
               alt="Preview"
