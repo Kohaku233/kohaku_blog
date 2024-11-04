@@ -3,14 +3,48 @@
 import Image from 'next/image';
 import type { S3Image } from '@/types/gallery';
 import Masonry from 'react-masonry-css';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 interface MasonryGridProps {
-  images: S3Image[];
+  initialImages: S3Image[];
+  initialLastKey?: string;
 }
 
-export default function MasonryGrid({ images }: MasonryGridProps) {
+export default function MasonryGrid({ initialImages, initialLastKey }: MasonryGridProps) {
+  const [images, setImages] = useState<S3Image[]>(initialImages);
+  const [lastKey, setLastKey] = useState<string | undefined>(initialLastKey);
+  const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // 使用 ref 检测加载更多的触发器是否可见
+  const { ref, inView } = useInView({
+    threshold: 0,
+    rootMargin: '100px',
+  });
+
+  const loadMoreImages = useCallback(async () => {
+    if (loading || !lastKey) return;
+
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/images?lastKey=${lastKey}`);
+      const data = await response.json();
+      
+      setImages(prev => [...prev, ...data.images]);
+      setLastKey(data.lastKey);
+    } catch (error) {
+      console.error('Error loading more images:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [lastKey, loading]);
+
+  useEffect(() => {
+    if (inView) {
+      loadMoreImages();
+    }
+  }, [inView, loadMoreImages]);
 
   const breakpointColumns = {
     default: 2,
@@ -38,13 +72,22 @@ export default function MasonryGrid({ images }: MasonryGridProps) {
               height={0}
               className="w-full h-auto hover:scale-105 transition-transform duration-300 rounded-lg"
               style={{ height: 'auto' }}
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               loading="lazy"
               quality={85}
             />
           </div>
         ))}
       </Masonry>
+
+      {/* 加载更多触发器 */}
+      {lastKey && (
+        <div ref={ref} className="w-full h-10 flex items-center justify-center">
+          {loading && (
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+          )}
+        </div>
+      )}
 
       {/* 图片预览模态框 */}
       {selectedImage && (
