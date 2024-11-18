@@ -52,7 +52,10 @@ export function Header() {
         <Dock
           magnification={60}
           distance={100}
-          className="scale-75 sm:scale-100 transition-transform duration-300"
+          className="scale-75 sm:scale-100 transition-transform duration-300 
+                     border-black/5 dark:border-white/5 
+                     bg-white/30 dark:bg-black/30 
+                     backdrop-blur-xl"
         >
           {navLinks.map((link) => (
             <DockIcon
@@ -61,7 +64,11 @@ export function Header() {
             >
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link href={link.href} aria-label={link.label}>
+                  <Link
+                    href={link.href}
+                    aria-label={link.label}
+                    className="block w-full h-full"
+                  >
                     <link.icon className="size-full" />
                   </Link>
                 </TooltipTrigger>
@@ -71,7 +78,10 @@ export function Header() {
               </Tooltip>
             </DockIcon>
           ))}
-          <Separator orientation="vertical" className="h-full py-2" />
+          <Separator 
+            orientation="vertical" 
+            className="h-full py-2 bg-gray-200/50 dark:bg-gray-700/50" 
+          />
           {socialLinks.map((link) => (
             <DockIcon
               key={link.label}
@@ -83,6 +93,7 @@ export function Header() {
                     href={link.href}
                     target="_blank"
                     aria-label={link.label}
+                    className="block w-full h-full"
                   >
                     <link.icon className="size-full" />
                   </Link>
@@ -93,19 +104,27 @@ export function Header() {
               </Tooltip>
             </DockIcon>
           ))}
-          <Separator orientation="vertical" className="h-full py-2" />
-          <DockIcon className="bg-black/10 dark:bg-white/10 p-1 sm:p-2">
+          <Separator 
+            orientation="vertical" 
+            className="h-full py-2 bg-gray-200/50 dark:bg-gray-700/50" 
+          />
+          <DockIcon className="bg-black/10 dark:bg-white/10 p-2 sm:p-3">
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="relative w-5 h-5" onClick={toggleTheme}>
-                  <LuSun
-                    className="absolute w-full h-full transition-all duration-300 
-                           rotate-0 scale-100 dark:-rotate-90 dark:scale-0"
-                  />
-                  <LuMoon
-                    className="absolute w-full h-full transition-all duration-300 
-                           rotate-90 scale-0 dark:rotate-0 dark:scale-100"
-                  />
+                <div
+                  className="block w-full h-full cursor-pointer"
+                  onClick={toggleTheme}
+                >
+                  <div className="relative size-full">
+                    <LuSun
+                      className="absolute w-full h-full transition-all duration-300 
+                             rotate-0 scale-100 dark:-rotate-90 dark:scale-0"
+                    />
+                    <LuMoon
+                      className="absolute w-full h-full transition-all duration-300 
+                             rotate-90 scale-0 dark:rotate-0 dark:scale-100"
+                    />
+                  </div>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
