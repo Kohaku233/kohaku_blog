@@ -1,13 +1,56 @@
+import {
+  BellIcon,
+  CalendarIcon,
+  FileTextIcon,
+  GlobeIcon,
+  InputIcon,
+} from "@radix-ui/react-icons";
+import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
+ 
+const features = [
+  {
+    Icon: FileTextIcon,
+    name: "Save your files",
+    description: "We automatically save your files as you type.",
+    href: "/",
+    cta: "Learn more",
+    background: <img className="absolute -right-20 -top-20 opacity-60" />,
+    className: "lg:row-start-1 lg:row-end-2 lg:col-start-2 lg:col-end-5",
+  },
+  {
+    Icon: InputIcon,
+    name: "Full text search",
+    description: "Search through all your files in one place.",
+    href: "/",
+    cta: "Learn more",
+    background: <img className="absolute -right-20 -top-20 opacity-60" />,
+    className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
+  },
+  {
+    Icon: GlobeIcon,
+    name: "Multilingual",
+    description: "Supports 100+ languages and counting.",
+    href: "/",
+    cta: "Learn more",
+    background: <img className="absolute -right-20 -top-20 opacity-60" />,
+    className: "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4",
+  },
+
+];
 export default function ProjectsPage() {
   return (
     <div className="max-w-[688px] mx-auto px-4 sm:px-6 lg:px-8">
       <h1 className="text-4xl font-bold mb-6">Projects</h1>
       <p className="text-lg text-gray-600 dark:text-gray-300 mb-12 text-balance">
-        我正在构建的一些有趣项目，包括开源项目和个人项目。
+        自己开发着玩玩的一些小项目!
       </p>
 
       <div className="space-y-8">
-        {/* 项目列表将在这里添加 */}
+      <BentoGrid className="lg:grid-rows-2">
+      {features.map((feature) => (
+          <BentoCard key={feature.name} {...feature} />
+        ))}
+      </BentoGrid>
       </div>
     </div>
   );

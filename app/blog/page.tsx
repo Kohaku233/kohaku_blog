@@ -11,8 +11,7 @@ export default async function BlogPage() {
     <div className="max-w-[688px] mx-auto px-4 sm:px-6 lg:px-8">
       <h1 className="text-4xl font-bold mb-6">Writing</h1>
       <p className="text-lg text-gray-600 dark:text-gray-300 mb-12 text-balance">
-        脑洞大开、探索性文章和操作指南。我写各种主题，如设计系统、
-        可访问性、创业公司和用户/开发者体验。
+        记录自己平时的心得体会，包括但不限于：日常随笔、书籍分享、技能巩固等等，年度计划总结每年最后一天会准时更新！
       </p>
       <div className="space-y-8">
         {allPostsData.map((blog) => (

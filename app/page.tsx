@@ -1,7 +1,28 @@
-import Image from "next/image";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import IconCloud from "@/components/ui/icon-cloud";
 
-
+const slugs = [
+  "typescript",
+  "javascript",
+  "react",
+  "html5",
+  "css3",
+  "nodedotjs",
+  "express",
+  "nextdotjs",
+  "prisma",
+  "amazonaws",
+  "postgresql",
+  "firebase",
+  "nginx",
+  "vercel",
+  "jest",
+  "docker",
+  "git",
+  "github",
+  "visualstudiocode",
+  "figma",
+];
 export default async function HomePage() {
   return (
     <div className="container mx-auto px-4 py-8">
@@ -22,14 +43,7 @@ export default async function HomePage() {
             front-end engineer who loves reading.
           </CardItem>
           <CardItem translateZ="100" className="w-full mt-4">
-            <Image
-              priority
-              src="/img/tokyo_tower.jpg"
-              height={1000}
-              width={1000}
-              className="w-full object-cover rounded-xl group-hover/card:shadow-xl blur-animation"
-              alt="thumbnail"
-            />
+            <IconCloud iconSlugs={slugs} />
           </CardItem>
         </CardBody>
       </CardContainer>
