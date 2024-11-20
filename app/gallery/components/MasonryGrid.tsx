@@ -5,6 +5,7 @@ import type { S3Image } from '@/types/gallery';
 import Masonry from 'react-masonry-css';
 import { useState, useEffect, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
+import BlurFade from "@/components/ui/blur-fade";
 
 interface MasonryGridProps {
   initialImages: S3Image[];
@@ -59,23 +60,25 @@ export default function MasonryGrid({ initialImages, initialLastKey }: MasonryGr
         className="flex -ml-4 w-auto"
         columnClassName="pl-4 bg-clip-padding"
       >
-        {images.map((image) => (
+        {images.map((image, idx) => (
           <div 
             key={image.key} 
             className="relative mb-4 cursor-zoom-in"
             onClick={() => setSelectedImage(image.url)}
           >
-            <Image
-              src={image.url}
-              alt={image.key}
-              width={800}
-              height={0}
-              className="w-full h-auto hover:scale-105 transition-transform duration-300 rounded-lg"
-              style={{ height: 'auto' }}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              loading="lazy"
-              quality={85}
-            />
+            <BlurFade key={image.key} delay={0.25 + idx * 0.05} inView>
+              <Image
+                src={image.url}
+                alt={image.key}
+                width={800}
+                height={0}
+                className="w-full h-auto hover:scale-105 transition-transform duration-300 rounded-lg"
+                style={{ height: 'auto' }}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                loading="lazy"
+                quality={85}
+              />
+            </BlurFade>
           </div>
         ))}
       </Masonry>

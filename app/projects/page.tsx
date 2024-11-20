@@ -1,6 +1,5 @@
 import {
   BellIcon,
-  CalendarIcon,
   FileTextIcon,
   GlobeIcon,
   InputIcon,
@@ -14,8 +13,7 @@ const features = [
     description: "We automatically save your files as you type.",
     href: "/",
     cta: "Learn more",
-    background: <img className="absolute -right-20 -top-20 opacity-60" />,
-    className: "lg:row-start-1 lg:row-end-2 lg:col-start-2 lg:col-end-5",
+    className: "lg:row-start-1 lg:row-end-3 lg:col-start-1 lg:col-end-3",
   },
   {
     Icon: InputIcon,
@@ -23,8 +21,7 @@ const features = [
     description: "Search through all your files in one place.",
     href: "/",
     cta: "Learn more",
-    background: <img className="absolute -right-20 -top-20 opacity-60" />,
-    className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
+    className: "lg:col-start-3 lg:col-end-4 lg:row-start-1 lg:row-end-3",
   },
   {
     Icon: GlobeIcon,
@@ -32,8 +29,15 @@ const features = [
     description: "Supports 100+ languages and counting.",
     href: "/",
     cta: "Learn more",
-    background: <img className="absolute -right-20 -top-20 opacity-60" />,
     className: "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4",
+  },
+  {
+    Icon: BellIcon,
+    name: "BellIcon",
+    description: "Supports 100+ languages and counting.",
+    href: "/",
+    cta: "Learn more",
+    className: "lg:col-start-2 lg:col-end-4 lg:row-start-3 lg:row-end-4",
   },
 
 ];
@@ -48,7 +52,7 @@ export default function ProjectsPage() {
       <div className="space-y-8">
       <BentoGrid className="lg:grid-rows-2">
       {features.map((feature) => (
-          <BentoCard key={feature.name} {...feature} />
+          <BentoCard key={feature.name} {...feature} background={<div className="bg-red-500 h-full w-full"></div>} />
         ))}
       </BentoGrid>
       </div>
