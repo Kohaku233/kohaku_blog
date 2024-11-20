@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode } from "react";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 

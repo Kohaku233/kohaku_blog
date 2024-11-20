@@ -24,18 +24,20 @@ export default async function BlogPage() {
           <BlurFade key={blog.id} delay={0.3 + index * 0.1}>
             <article className="border-gray-200 dark:border-gray-700 pb-8 last:border-b-0">
               <Link href={`/blog/${blog.id}`} className="block group">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2">
-                  <h2 className="text-2xl font-semibold group-hover:text-[#C3000F] transition-colors mb-1 sm:mb-0">
-                    {blog.title}
-                  </h2>
-                  <time className="text-lg text-gray-500 dark:text-gray-400">
+                <div className="flex items-center justify-between gap-8">
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-semibold group-hover:text-[#C3000F] transition-colors mb-2">
+                      {blog.title}
+                    </h2>
+                    <div className="text-lg text-gray-600 dark:text-gray-300">
+                      <ReactMarkdown>
+                        {blog.summary}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                  <time className="text-lg text-gray-500 dark:text-gray-400 shrink-0 self-center">
                     {formatDate(blog.date)}
                   </time>
-                </div>
-                <div className="text-lg text-gray-600 dark:text-gray-300">
-                  <ReactMarkdown>
-                    {blog.summary}
-                  </ReactMarkdown>
                 </div>
               </Link>
             </article>

@@ -2,6 +2,7 @@ import { getPostData } from "@/lib/posts";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import BlurFade from "@/components/ui/blur-fade";
+import { formatDate } from "@/lib/utils";
 
 export default async function BlogPage({
   params,
@@ -23,9 +24,9 @@ export default async function BlogPage({
         </BlurFade>
         
         <BlurFade delay={0.2}>
-          <p className="text-sm text-[#2B1B42]/70 dark:text-[#00FF00]/70 mb-8">
-            最后修改时间: {new Date(postData.date).toLocaleString('zh-CN')}
-          </p>
+          <div className="text-lg text-gray-500 dark:text-gray-400">
+            {formatDate(postData.date)}
+          </div>
         </BlurFade>
 
         <BlurFade delay={0.3}>
