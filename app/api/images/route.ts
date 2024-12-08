@@ -1,29 +1,20 @@
-import { ListObjectsV2Command } from '@aws-sdk/client-s3';
-import { s3Client } from '@/utils/s3';
+import { getImgurImages } from '@/utils/imgur';
 import { NextRequest, NextResponse } from 'next/server';
+
+const IMAGES_PER_PAGE = 4;
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const lastKey = searchParams.get('lastKey');
-  const limit = 6;
-
+  const page = parseInt(searchParams.get('page') || '1');
+  
   try {
-    const command = new ListObjectsV2Command({
-      Bucket: process.env.AWS_BUCKET_NAME,
-      MaxKeys: limit,
-      StartAfter: lastKey || undefined
-    });
+    const allImages = await getImgurImages();
+    const start = (page - 1) * IMAGES_PER_PAGE;
+    const images = allImages.slice(start, start + IMAGES_PER_PAGE);
     
-    const response = await s3Client.send(command);
-    
-    const images = response.Contents?.map((item) => ({
-      key: item.Key || '',
-      url: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${item.Key}`,
-    })) || [];
-
     return NextResponse.json({
       images,
-      lastKey: response.IsTruncated ? response.Contents?.slice(-1)[0].Key : undefined
+      hasMore: start + IMAGES_PER_PAGE < allImages.length
     });
   } catch (error) {
     console.error('Error fetching images:', error);

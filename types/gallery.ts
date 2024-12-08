@@ -1,4 +1,5 @@
-export interface S3Image {
+export interface ImgurImage {
   key: string;
   url: string;
+  datetime: number;
 } 
