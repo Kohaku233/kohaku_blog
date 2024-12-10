@@ -18,7 +18,8 @@ export async function getImgurImages() {
     const response = await fetch(`https://api.imgur.com/3/album/${IMGUR_ALBUM_HASH}/images`, {
       headers: {
         'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`
-      }
+      },
+      next: { revalidate: 300 }
     });
     
     if (!response.ok) {
@@ -28,11 +29,14 @@ export async function getImgurImages() {
     }
     
     const data = await response.json() as ImgurApiResponse;
-    return data.data.map((image: ImgurImageResponse) => ({
-      key: image.id,
-      url: image.link,
-      datetime: image.datetime,
-    })).sort((a, b) => b.datetime - a.datetime);
+    
+    return data.data
+      .map((image: ImgurImageResponse) => ({
+        key: image.id,
+        url: image.link,
+        datetime: image.datetime,
+      }))
+      .sort((a, b) => b.datetime - a.datetime);
     
   } catch (error) {
     console.error('Error fetching images:', error);

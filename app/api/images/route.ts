@@ -1,23 +1,23 @@
 import { getImgurImages } from '@/utils/imgur';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-const IMAGES_PER_PAGE = 4;
+export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const page = parseInt(searchParams.get('page') || '1');
-  
+export async function GET() {
   try {
-    const allImages = await getImgurImages();
-    const start = (page - 1) * IMAGES_PER_PAGE;
-    const images = allImages.slice(start, start + IMAGES_PER_PAGE);
-    
+    const images = await getImgurImages();
     return NextResponse.json({
       images,
-      hasMore: start + IMAGES_PER_PAGE < allImages.length
+      total: images.length
     });
   } catch (error) {
     console.error('Error fetching images:', error);
-    return NextResponse.json({ images: [] }, { status: 500 });
+    return NextResponse.json({ 
+      images: [], 
+      total: 0 
+    }, { 
+      status: 500 
+    });
   }
-} 
+}

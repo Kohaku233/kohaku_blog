@@ -3,55 +3,36 @@
 import Image from "next/image";
 import type { ImgurImage } from "@/types/gallery";
 import Masonry from "react-masonry-css";
-import { useState, useEffect, useCallback } from "react";
-import { useInView } from "react-intersection-observer";
+import { useState, useEffect } from "react";
 import BlurFade from "@/components/ui/blur-fade";
 
 interface MasonryGridProps {
-  initialImages: ImgurImage[];
+  className?: string;
 }
 
-export default function MasonryGrid({ initialImages }: MasonryGridProps) {
-  const [images, setImages] = useState<ImgurImage[]>(initialImages);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+export default function MasonryGrid({ className }: MasonryGridProps) {
+  const [images, setImages] = useState<ImgurImage[]>([]);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  // 使用 ref 检测加载更多的触发器是否可见
-  const { ref, inView } = useInView({
-    threshold: 0,
-    rootMargin: "100px",
-  });
-
-  const loadMoreImages = useCallback(async () => {
-    if (loading || !hasMore) return;
-
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/images?page=${page + 1}`);
-      const data = await response.json();
-
-      if (data.images.length === 0) {
-        setHasMore(false);
-        return;
-      }
-
-      setImages((prev) => [...prev, ...data.images]);
-      setPage((prev) => prev + 1);
-      setHasMore(data.hasMore);
-    } catch (error) {
-      console.error("Error loading more images:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [page, loading, hasMore]);
-
+  
+  // 一次性获取所有图片
   useEffect(() => {
-    if (inView) {
-      loadMoreImages();
-    }
-  }, [inView, loadMoreImages]);
+    const fetchImages = async () => {
+      try {
+        const response = await fetch("/api/images");
+        const data = await response.json();
+        setImages(data.images);
+      } catch (error) {
+        console.error("Error loading images:", error);
+      }
+    };
+    fetchImages();
+  }, []);
+
+  const handleImageLoad = (imageKey: string) => {
+    setLoadedImages((prev) => new Set(prev).add(imageKey));
+  };
 
   const breakpointColumns = {
     default: 2,
@@ -60,7 +41,7 @@ export default function MasonryGrid({ initialImages }: MasonryGridProps) {
   };
 
   return (
-    <>
+    <div className={className}>
       <Masonry
         breakpointCols={breakpointColumns}
         className="flex -ml-4 w-auto"
@@ -72,39 +53,53 @@ export default function MasonryGrid({ initialImages }: MasonryGridProps) {
             className="relative mb-4 cursor-zoom-in"
             onClick={() => setSelectedImage(image.url)}
           >
-            <BlurFade key={image.key} delay={0.25 + idx * 0.05} inView>
-              <Image
-                src={image.url}
-                alt={`Gallery image ${idx + 1}`}
-                width={800}
-                height={0}
-                className="w-full h-auto hover:scale-105 transition-transform duration-300 rounded-lg"
-                style={{ height: "auto" }}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                loading="lazy"
-                quality={85}
-              />
+            <BlurFade delay={0.1 + idx * 0.05}>
+              <div className="relative">
+                {/* 模糊的缩略图背景 */}
+                <div
+                  className="absolute inset-0 blur-xl scale-110"
+                  style={{
+                    backgroundImage: `url(${image.url}?w=20)`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    opacity: loadedImages.has(image.key) ? 0 : 1,
+                    transition: "opacity 0.3s ease-in-out",
+                  }}
+                />
+
+                {/* 高质量图片 */}
+                <Image
+                  src={image.url}
+                  alt={`Gallery image ${idx + 1}`}
+                  width={800}
+                  height={0}
+                  className={`
+                    w-full h-auto rounded-lg transition-all duration-300
+                    ${
+                      loadedImages.has(image.key)
+                        ? "opacity-100 hover:scale-105"
+                        : "opacity-0"
+                    }
+                  `}
+                  style={{ height: "auto" }}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  quality={85}
+                  priority={idx < 4} // 优先加载前4张图片
+                  onLoad={() => handleImageLoad(image.key)}
+                />
+              </div>
             </BlurFade>
           </div>
         ))}
       </Masonry>
 
-      {/* 恢复原来的加载动画 */}
-      {hasMore && (
-        <div ref={ref} className="w-full h-10 flex items-center justify-center">
-          {loading && (
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-          )}
-        </div>
-      )}
-
-      {/* 恢复原来的预览模态框 */}
+      {/* 图片预览模态框 */}
       {selectedImage && (
         <div
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
           onClick={() => setSelectedImage(null)}
         >
-          <div className="relative max-w-[90vw] max-h-[90vh] overflow-auto">
+          <div className="relative max-w-[90vw] max-h-[90vh]">
             <button
               onClick={() => setSelectedImage(null)}
               className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
@@ -133,6 +128,6 @@ export default function MasonryGrid({ initialImages }: MasonryGridProps) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
