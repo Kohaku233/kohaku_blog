@@ -81,13 +81,3 @@
   animation: blurAnimation 700ms ease-out forwards;
 }
 
-.masonry-grid {
-  display: flex;
-  width: auto;
-}
-
-.masonry-grid_column {
-  background-clip: padding-box;
-}
-
-
