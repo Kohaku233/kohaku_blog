@@ -1,5 +1,11 @@
 import { Icons } from "@/components/Icons";
 
+export const porfolio = {
+  intro: "Hi, I'm ",
+  name: "Kohaku 👋",
+  description:["I am a long-termist who currently lives in Tokyo","and is also a software engineer who loves reading."],
+};
+
 export const navLinks = [
   { href: "/", icon: Icons.home, label: "Home" },
   { href: "/blog", icon: Icons.penTool, label: "Blog" },
