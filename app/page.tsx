@@ -1,52 +1,52 @@
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
-import IconCloud from "@/components/ui/icon-cloud";
+import RetroGrid from "@/components/ui/retro-grid";
+import SparklesText from "@/components/ui/sparkles-text";
+import Image from "next/image";
+import BlurFade from "@/components/ui/blur-fade";
 
-const slugs = [
-  "typescript",
-  "javascript",
-  "react",
-  "html5",
-  "css3",
-  "nodedotjs",
-  "express",
-  "nextdotjs",
-  "prisma",
-  "amazonaws",
-  "postgresql",
-  "firebase",
-  "nginx",
-  "vercel",
-  "jest",
-  "docker",
-  "git",
-  "github",
-  "visualstudiocode",
-  "figma",
-];
+import { porfolio } from "@/lib/resume";
 export default async function HomePage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <CardContainer className="inter-var"> 
-        <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border  ">
-          <CardItem
-            translateZ="50"
-            className="text-xl font-bold text-neutral-600 dark:text-white"
-          >
-            Hi, I&#39;m Kohaku 👋
-          </CardItem>
-          <CardItem
-            as="p"
-            translateZ="60"
-            className="text-neutral-500 text-lg max-w-sm mt-2 dark:text-neutral-300 text-wrap"
-          >
-            I am a long-termist who currently lives in Tokyo and is also a
-            software engineer who loves reading.
-          </CardItem>
-          <CardItem translateZ="100" className="w-full mt-4">
-            <IconCloud iconSlugs={slugs} />
-          </CardItem>
-        </CardBody>
-      </CardContainer>
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="relative flex h-[800px] w-full flex-col items-center justify-center overflow-hidden rounded-lg">
+          <div className="absolute top-0 right-0 w-[400px] h-[200px]">
+            <BlurFade delay={0.1}>
+              <Image
+                src="/eva_01.png"
+                alt="EVA01"
+                width={400}
+                height={200}
+                className="object-contain "
+              />
+            </BlurFade>
+          </div>
+          <div className="mt-20">
+            <BlurFade>
+              <h1 className="text-4xl font-bold text-black dark:text-white mb-4">
+                {porfolio.intro}
+                <SparklesText className="inline-block" text={porfolio.name} />
+            </h1>
+            </BlurFade>
+            <h1 className="text-2xl font-bold text-gray-600 dark:text-gray-300 ">
+              {porfolio.description.map((desc, index) => (
+                <BlurFade delay={0.3 + index * 0.1} key={index}>
+                  <p>{desc}</p>
+                </BlurFade>
+              ))}
+            </h1>
+          </div>
+          <div className="absolute bottom-0 left-0 w-[300px] h-[200px]">
+            <BlurFade delay={0.6}>
+              <Image
+                src="/eva_02.png"
+                alt="EVA02"
+                width={400}
+                height={200}
+                className="object-contain"
+              />
+            </BlurFade>
+          </div>
+          <RetroGrid />
+      </div>
     </div>
   );
 }
