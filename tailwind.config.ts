@@ -64,7 +64,6 @@ const config: Config = {
   },
   plugins: [
     tailwindcssAnimate,
-    require('@tailwindcss/typography'),
   ],
 };
 
