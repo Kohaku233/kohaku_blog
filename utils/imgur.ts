@@ -19,7 +19,7 @@ export async function getImgurImages() {
       headers: {
         'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`
       },
-      next: { revalidate: 300 }
+      next: { revalidate: 86400 }
     });
     
     if (!response.ok) {
