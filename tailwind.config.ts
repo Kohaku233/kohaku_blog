@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
-
+import typography from '@tailwindcss/typography'
 const config: Config = {
+  plugins: [typography],
   darkMode: ["class"], // 确保这行存在
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
