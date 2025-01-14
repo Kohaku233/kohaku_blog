@@ -1,7 +1,7 @@
 export interface ImgurImage {
-  key: string;
-  url: string;
+  id: string;
   datetime: number;
   width: number;
   height: number;
+  link: string;
 } 

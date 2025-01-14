@@ -1,23 +1,14 @@
-import { getImgurImages } from '@/utils/imgur';
-import { NextResponse } from 'next/server';
-
-export const dynamic = 'force-dynamic';
-export const revalidate = 300;
+import { getAllImages } from "@/utils/imgur";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const images = await getImgurImages();
+    const images = await getAllImages();
     return NextResponse.json({
-      images,
-      total: images.length
+      images
     });
   } catch (error) {
-    console.error('Error fetching images:', error);
-    return NextResponse.json({ 
-      images: [], 
-      total: 0 
-    }, { 
-      status: 500 
-    });
+    console.error("Error in /api/images:", error);
+    return NextResponse.json({ images: [] });
   }
 }

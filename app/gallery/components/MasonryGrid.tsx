@@ -123,9 +123,9 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
           <div className="flex flex-col gap-4">
             {columns.left.images.map((image, idx) => (
               <Item
-                key={image.key}
-                original={image.url}
-                thumbnail={image.url}
+                key={image.id}
+                original={image.link}
+                thumbnail={image.link}
                 width={image.width}
                 height={image.height}
               >
@@ -134,14 +134,14 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                     <BlurFade delay={getLoadDelay(idx, idx, false)}>
                       <div className="relative">
                         <Image
-                          src={image.url}
+                          src={image.link}
                           alt={`Gallery image ${idx + 1}`}
                           width={image.width}
                           height={image.height}
                           className={`
                             w-full h-auto rounded-lg transition-all duration-300
                             ${
-                              loadedImages.has(image.key)
+                              loadedImages.has(image.id)
                                 ? "opacity-100 hover:scale-105"
                                 : "opacity-0"
                             }
@@ -150,7 +150,7 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           quality={85}
                           priority={idx < 4}
-                          onLoad={() => handleImageLoad(image.key)}
+                          onLoad={() => handleImageLoad(image.id)}
                         />
                       </div>
                     </BlurFade>
@@ -164,9 +164,9 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
           <div className="flex flex-col gap-4">
             {columns.right.images.map((image, idx) => (
               <Item
-                key={image.key}
-                original={image.url}
-                thumbnail={image.url}
+                key={image.id}
+                original={image.link}
+                thumbnail={image.link}
                 width={image.width}
                 height={image.height}
               >
@@ -175,7 +175,7 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                     <BlurFade delay={getLoadDelay(idx, idx, true)}>
                       <div className="relative">
                         <Image
-                          src={image.url}
+                          src={image.link}
                           alt={`Gallery image ${
                             idx + columns.left.images.length + 1
                           }`}
@@ -184,7 +184,7 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                           className={`
                             w-full h-auto rounded-lg transition-all duration-300
                             ${
-                              loadedImages.has(image.key)
+                              loadedImages.has(image.id)
                                 ? "opacity-100 hover:scale-105"
                                 : "opacity-0"
                             }
@@ -193,7 +193,7 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           quality={85}
                           priority={idx < 4}
-                          onLoad={() => handleImageLoad(image.key)}
+                          onLoad={() => handleImageLoad(image.id)}
                         />
                       </div>
                     </BlurFade>
