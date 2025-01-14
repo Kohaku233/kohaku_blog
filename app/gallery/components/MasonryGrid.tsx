@@ -11,19 +11,60 @@ interface MasonryGridProps {
   className?: string;
 }
 
+interface ColumnImage extends ImgurImage {
+  displayWidth: number;
+  displayHeight: number;
+}
+
+interface Column {
+  images: ColumnImage[];
+}
+
 export default function MasonryGrid({ className }: MasonryGridProps) {
-  const [images, setImages] = useState<ImgurImage[]>([]);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-  const [imageDimensions, setImageDimensions] = useState<
-    Record<string, { width: number; height: number }>
-  >({});
+  const [columns, setColumns] = useState<{
+    left: Column;
+    right: Column;
+  }>({
+    left: { images: [] },
+    right: { images: [] },
+  });
 
   useEffect(() => {
     const fetchImages = async () => {
       try {
         const response = await fetch("/api/images");
         const data = await response.json();
-        setImages(data.images);
+
+        // 按时间排序并计算显示尺寸
+        const sortedImages = data.images
+          .sort(
+            (a: ImgurImage, b: ImgurImage) =>
+              new Date(b.datetime).getTime() - new Date(a.datetime).getTime()
+          )
+          .map((img: ImgurImage): ColumnImage => {
+            // 计算显示尺寸，保持宽高比
+            const displayWidth = 600; // 设置统一的显示宽度
+            const aspectRatio = img.width / img.height;
+            const displayHeight = displayWidth / aspectRatio;
+
+            return {
+              ...img,
+              displayWidth,
+              displayHeight,
+            };
+          });
+
+        // 动态分配图片到两列
+        const { leftColumn, rightColumn } = distributeImages(sortedImages);
+        setColumns({
+          left: {
+            images: leftColumn,
+          },
+          right: {
+            images: rightColumn,
+          },
+        });
       } catch (error) {
         console.error("Error loading images:", error);
       }
@@ -31,97 +72,47 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
     fetchImages();
   }, []);
 
-  const handleImageLoad = (
-    imageKey: string,
-    event: React.SyntheticEvent<HTMLImageElement>
-  ) => {
-    const img = event.target as HTMLImageElement;
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
+  // 分配图片到两列，尽量保持高度平衡
+  const distributeImages = (images: ColumnImage[]) => {
+    const leftColumn: ColumnImage[] = [];
+    const rightColumn: ColumnImage[] = [];
+    let leftHeight = 0;
+    let rightHeight = 0;
+    const gap = 16;
 
-    // 获取原始尺寸和比例
-    const originalWidth = img.naturalWidth;
-    const originalHeight = img.naturalHeight;
-    const aspectRatio = originalWidth / originalHeight;
+    images.forEach((image) => {
+      // 计算添加这张图片后的列高
+      const imageHeight = image.displayHeight + gap;
 
-    let displayWidth = originalWidth;
-    let displayHeight = originalHeight;
-
-    // 对于横向图片（宽度大于高度）
-    if (aspectRatio > 1) {
-      // 先按照宽度计算
-      const minWidth = screenWidth * 0.9;
-      displayWidth = Math.max(originalWidth, minWidth);
-      displayHeight = displayWidth / aspectRatio;
-
-      // 如果高度超过屏幕高度的90%，则按高度重新计算
-      const maxHeight = screenHeight * 0.9;
-      if (displayHeight > maxHeight) {
-        displayHeight = maxHeight;
-        displayWidth = displayHeight * aspectRatio;
-      }
-    } else {
-      // 对于竖向图片，保持原始尺寸，但限制最大宽度
-      const maxWidth = screenWidth * 0.8;
-      if (displayWidth > maxWidth) {
-        displayWidth = maxWidth;
-        displayHeight = displayWidth / aspectRatio;
-      }
-    }
-
-    setLoadedImages((prev) => new Set(prev).add(imageKey));
-    setImageDimensions((prev) => ({
-      ...prev,
-      [imageKey]: {
-        width: displayWidth,
-        height: displayHeight,
-      },
-    }));
-  };
-
-  // 分配图片到两列，保持时间顺序并交错排列
-  const distributeImages = (images: ImgurImage[]) => {
-    const totalImages = images.length;
-    const leftColumnCount = Math.floor((totalImages - 2) / 2);
-    
-    // 创建一个交错排列的数组，表示每个位置应该放在哪一列
-    // true 表示左列，false 表示右列
-    const positions = Array(totalImages).fill(false).map((_, index) => {
-      if (index < leftColumnCount * 2) {
-        return index % 2 === 0;
-      }
-      return false; // 剩余的都放右列
-    });
-
-    const leftColumn: ImgurImage[] = [];
-    const rightColumn: ImgurImage[] = [];
-
-    // 按照位置数组分配图片
-    images.forEach((image, index) => {
-      if (positions[index]) {
+      // 将图片添加到高度较小的列
+      if (leftHeight <= rightHeight) {
         leftColumn.push(image);
+        leftHeight += imageHeight;
       } else {
         rightColumn.push(image);
+        rightHeight += imageHeight;
       }
     });
 
-    // 返回交错排列后的图片数组和它们的显示顺序
-    return {
-      leftColumn,
-      rightColumn,
-      displayOrder: positions.map((isLeft, index) => ({
-        image: images[index],
-        order: index
-      }))
-    };
+    return { leftColumn, rightColumn };
   };
 
-  const { leftColumn, rightColumn, displayOrder } = distributeImages(images);
+  const handleImageLoad = (imageKey: string) => {
+    setLoadedImages((prev) => new Set(prev).add(imageKey));
+  };
 
-  // 计算图片的延迟时间
-  const getImageDelay = (image: ImgurImage) => {
-    const index = displayOrder.findIndex(item => item.image.key === image.key);
-    return 0.1 + index * 0.05;
+  // 重新设计加载延迟计算函数
+  const getLoadDelay = (
+    leftIdx: number,
+    _: number,
+    isRightColumn: boolean
+  ) => {
+    if (isRightColumn) {
+      // 右列图片的实际序号应该是 leftIdx 对应的左列图片之后
+      return (leftIdx * 2 + 1) * 0.05;
+    }
+    // 左列图片的序号就是它的索引 * 2
+    return leftIdx * 2 * 0.05;
   };
 
   return (
@@ -130,27 +121,23 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* 左列 */}
           <div className="flex flex-col gap-4">
-            {leftColumn.map((image, idx) => (
+            {columns.left.images.map((image, idx) => (
               <Item
                 key={image.key}
                 original={image.url}
                 thumbnail={image.url}
-                width={imageDimensions[image.key]?.width || 0}
-                height={imageDimensions[image.key]?.height || 0}
+                width={image.width}
+                height={image.height}
               >
                 {({ ref, open }) => (
-                  <div 
-                    ref={ref} 
-                    onClick={open} 
-                    className="cursor-zoom-in"
-                  >
-                    <BlurFade delay={getImageDelay(image)}>
+                  <div ref={ref} onClick={open} className="cursor-zoom-in">
+                    <BlurFade delay={getLoadDelay(idx, idx, false)}>
                       <div className="relative">
                         <Image
                           src={image.url}
                           alt={`Gallery image ${idx + 1}`}
-                          width={800}
-                          height={600}
+                          width={image.width}
+                          height={image.height}
                           className={`
                             w-full h-auto rounded-lg transition-all duration-300
                             ${
@@ -163,7 +150,7 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           quality={85}
                           priority={idx < 4}
-                          onLoad={(event) => handleImageLoad(image.key, event)}
+                          onLoad={() => handleImageLoad(image.key)}
                         />
                       </div>
                     </BlurFade>
@@ -175,27 +162,25 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
 
           {/* 右列 */}
           <div className="flex flex-col gap-4">
-            {rightColumn.map((image, idx) => (
+            {columns.right.images.map((image, idx) => (
               <Item
                 key={image.key}
                 original={image.url}
                 thumbnail={image.url}
-                width={imageDimensions[image.key]?.width || 0}
-                height={imageDimensions[image.key]?.height || 0}
+                width={image.width}
+                height={image.height}
               >
                 {({ ref, open }) => (
-                  <div 
-                    ref={ref} 
-                    onClick={open} 
-                    className="cursor-zoom-in"
-                  >
-                    <BlurFade delay={getImageDelay(image)}>
+                  <div ref={ref} onClick={open} className="cursor-zoom-in">
+                    <BlurFade delay={getLoadDelay(idx, idx, true)}>
                       <div className="relative">
                         <Image
                           src={image.url}
-                          alt={`Gallery image ${idx + leftColumn.length + 1}`}
-                          width={800}
-                          height={600}
+                          alt={`Gallery image ${
+                            idx + columns.left.images.length + 1
+                          }`}
+                          width={image.width}
+                          height={image.height}
                           className={`
                             w-full h-auto rounded-lg transition-all duration-300
                             ${
@@ -208,7 +193,7 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           quality={85}
                           priority={idx < 4}
-                          onLoad={(event) => handleImageLoad(image.key, event)}
+                          onLoad={() => handleImageLoad(image.key)}
                         />
                       </div>
                     </BlurFade>

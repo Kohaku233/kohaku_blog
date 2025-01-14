@@ -2,6 +2,8 @@ interface ImgurImageResponse {
   id: string;
   link: string;
   datetime: number;
+  width: number;
+  height: number;
 }
 
 interface ImgurApiResponse {
@@ -35,6 +37,8 @@ export async function getImgurImages() {
         key: image.id,
         url: image.link,
         datetime: image.datetime,
+        width: image.width,
+        height: image.height,
       }))
       .sort((a, b) => b.datetime - a.datetime);
     
