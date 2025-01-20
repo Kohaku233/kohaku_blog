@@ -15,6 +15,7 @@ import { navLinks, socialLinks } from "@/lib/resume";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { ModeToggle } from "./ModeToggle";
+import { LocaleToggle } from "./LocaleToggle";
 
 export function Header() {
   return (
@@ -29,9 +30,7 @@ export function Header() {
                      backdrop-blur-xl gap-1 shadow-lg shadow-black/10 dark:shadow-white/5"
         >
           {navLinks.map((item) => (
-            <DockIcon
-              key={item.label}
-            >
+            <DockIcon key={item.label}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -56,9 +55,7 @@ export function Header() {
             className="h-full py-2 bg-gray-200/50 dark:bg-gray-700/50"
           />
           {socialLinks.map((item) => (
-            <DockIcon
-              key={item.label}
-            >
+            <DockIcon key={item.label}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -83,6 +80,9 @@ export function Header() {
             orientation="vertical"
             className="h-full py-2 bg-gray-200/50 dark:bg-gray-700/50"
           />
+          <DockIcon>
+            <LocaleToggle />
+          </DockIcon>
           <DockIcon>
             <Tooltip>
               <TooltipTrigger asChild>
