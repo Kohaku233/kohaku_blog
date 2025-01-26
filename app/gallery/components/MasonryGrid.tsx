@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { Gallery, Item } from "react-photoswipe-gallery";
 import "photoswipe/dist/photoswipe.css";
 import BlurFade from "@/components/ui/blur-fade";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MasonryGridProps {
   className?: string;
@@ -22,6 +23,7 @@ interface Column {
 
 export default function MasonryGrid({ className }: MasonryGridProps) {
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
   const [columns, setColumns] = useState<{
     left: Column;
     right: Column;
@@ -30,8 +32,19 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
     right: { images: [] },
   });
 
+  // 添加骨架屏组件
+  const SkeletonColumn = () => (
+    <div className="flex flex-col gap-4">
+      <Skeleton className="w-full h-[300px] rounded-lg" />
+      <Skeleton className="w-full h-[400px] rounded-lg" />
+      <Skeleton className="w-full h-[250px] rounded-lg" />
+      <Skeleton className="w-full h-[350px] rounded-lg" />
+    </div>
+  );
+
   useEffect(() => {
     const fetchImages = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch("/api/images");
         const data = await response.json();
@@ -67,6 +80,8 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
         });
       } catch (error) {
         console.error("Error loading images:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchImages();
@@ -102,11 +117,7 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
   };
 
   // 重新设计加载延迟计算函数
-  const getLoadDelay = (
-    leftIdx: number,
-    _: number,
-    isRightColumn: boolean
-  ) => {
+  const getLoadDelay = (leftIdx: number, _: number, isRightColumn: boolean) => {
     if (isRightColumn) {
       // 右列图片的实际序号应该是 leftIdx 对应的左列图片之后
       return (leftIdx * 2 + 1) * 0.05;
@@ -139,12 +150,13 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                           width={image.width}
                           height={image.height}
                           className={`
-                            w-full h-auto rounded-lg transition-all duration-300
+                            w-full h-auto rounded-lg transition-opacity duration-500
                             ${
                               loadedImages.has(image.id)
-                                ? "opacity-100 hover:scale-105"
+                                ? "opacity-100"
                                 : "opacity-0"
                             }
+                            hover:scale-105 transition-transform duration-300
                           `}
                           style={{ height: "auto" }}
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -158,6 +170,9 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                 )}
               </Item>
             ))}
+            {isLoading && columns.left.images.length === 0 && (
+              <SkeletonColumn />
+            )}
           </div>
 
           {/* 右列 */}
@@ -182,12 +197,13 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                           width={image.width}
                           height={image.height}
                           className={`
-                            w-full h-auto rounded-lg transition-all duration-300
+                            w-full h-auto rounded-lg transition-opacity duration-500
                             ${
                               loadedImages.has(image.id)
-                                ? "opacity-100 hover:scale-105"
+                                ? "opacity-100"
                                 : "opacity-0"
                             }
+                            hover:scale-105 transition-transform duration-300
                           `}
                           style={{ height: "auto" }}
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -201,6 +217,9 @@ export default function MasonryGrid({ className }: MasonryGridProps) {
                 )}
               </Item>
             ))}
+            {isLoading && columns.right.images.length === 0 && (
+              <SkeletonColumn />
+            )}
           </div>
         </div>
       </Gallery>
