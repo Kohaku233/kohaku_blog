@@ -6,6 +6,13 @@ import BlurFade from "@/components/ui/blur-fade";
 import { formatDate } from "@/lib/utils";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import dynamic from "next/dynamic";
+
+// 动态导入评论组件以避免SSR问题
+const CommentSection = dynamic(
+  () => import("@/components/comments/CommentSection"),
+  { ssr: false }
+);
 
 export default async function BlogPage({
   params,
@@ -80,6 +87,11 @@ export default async function BlogPage({
           </div>
         </BlurFade>
       </article>
+
+      {/* 评论部分 */}
+      <div className=" border-gray-200 dark:border-gray-800 mt-8 pt-8">
+        <CommentSection postSlug={params.slug} />
+      </div>
     </div>
   );
 }
