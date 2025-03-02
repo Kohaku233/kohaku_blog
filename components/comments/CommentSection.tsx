@@ -311,7 +311,7 @@ export default function CommentSection({ postSlug }: CommentSectionProps) {
       setCommentToDelete(null);
 
       // 依赖实时订阅更新UI
-      // loadComments(); // 可选：立即刷新评论列表
+      loadComments(); // 可选：立即刷新评论列表
     } catch (error) {
       console.error("删除评论失败:", error);
       toast.error("删除评论失败，请稍后重试", {
