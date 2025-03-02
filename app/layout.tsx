@@ -4,6 +4,8 @@ import { ThemeProvider } from "next-themes";
 
 import "./globals.css";
 import { Layout } from "@/components/Layout";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const ultralightitalic = localFont({
   src: "./fonts/ultralightitalic.woff",
@@ -36,7 +38,10 @@ export default function RootLayout({
         className={`${ultralightitalic.variable} ${FOTMatisseProUB.variable} antialiased`}
       >
         <ThemeProvider attribute="class">
-          <Layout>{children}</Layout>
+          <AuthProvider>
+            <Layout>{children}</Layout>
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
