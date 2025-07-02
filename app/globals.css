@@ -81,15 +81,134 @@
   animation: blurAnimation 700ms ease-out forwards;
 }
 
-/* 代码块样式 */
-pre {
-  position: relative;
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .prose-content {
+    overflow-x: hidden;
+  }
+  
+  .prose-content pre {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 0;
+  }
+  
+  .prose-content table {
+    font-size: 0.8rem;
+  }
 }
 
-/* 语言标识 */
-pre::before {
-  content: attr(data-language);
-  @apply absolute right-4 top-0 text-xs text-gray-400 font-mono;
-  padding: 0.5rem;
-  border-radius: 0 0 0.375rem 0.375rem;
+/* 代码块优化 */
+.prose-content pre {
+  @apply relative;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}
+
+.prose-content pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.prose-content pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.prose-content pre::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 4px;
+}
+
+.prose-content pre::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(155, 155, 155, 0.7);
+}
+
+/* 改进的链接样式 */
+.prose-content a {
+  @apply text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200;
+  text-decoration: underline;
+  text-decoration-color: rgba(59, 130, 246, 0.3);
+  text-underline-offset: 3px;
+}
+
+.prose-content a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* 表格响应式 */
+.prose-content table {
+  @apply block overflow-x-auto whitespace-nowrap;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}
+
+.prose-content table::-webkit-scrollbar {
+  height: 8px;
+}
+
+.prose-content table::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.prose-content table::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 4px;
+}
+
+@media (min-width: 768px) {
+  .prose-content table {
+    @apply table overflow-visible whitespace-normal;
+  }
+}
+
+/* 改进的选择样式 */
+::selection {
+  @apply bg-blue-200 dark:bg-blue-800;
+}
+
+/* 焦点样式 */
+.prose-content :focus-visible {
+  @apply outline-2 outline-offset-2 outline-blue-500 dark:outline-blue-400;
+}
+
+/* 图片优化 */
+.prose-content img {
+  @apply transition-transform duration-300 hover:scale-[1.02];
+}
+
+/* 列表样式改进 */
+.prose-content ul > li {
+  @apply relative;
+}
+
+.prose-content ul > li::marker {
+  @apply text-blue-500 dark:text-blue-400;
+}
+
+.prose-content ol > li::marker {
+  @apply text-blue-500 dark:text-blue-400 font-semibold;
+}
+
+/* 引用块增强 */
+.prose-content blockquote {
+  @apply relative;
+}
+
+.prose-content blockquote::before {
+  content: '"';
+  @apply absolute -top-2 -left-2 text-4xl text-gray-300 dark:text-gray-600 font-serif;
+}
+
+/* 平滑滚动 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 标题锚点样式 */
+.prose-content h1,
+.prose-content h2,
+.prose-content h3,
+.prose-content h4,
+.prose-content h5,
+.prose-content h6 {
+  @apply scroll-mt-20;
 }
