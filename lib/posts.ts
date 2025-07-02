@@ -13,8 +13,24 @@ export interface PostData {
   content?: string;
 }
 
+// 缓存对象
+const cache = new Map<string, { data: unknown; timestamp: number }>();
+const CACHE_TTL = 1000 * 60 * 10; // 10分钟缓存
+
+// 检查缓存是否有效
+function isCacheValid(timestamp: number): boolean {
+  return Date.now() - timestamp < CACHE_TTL;
+}
+
 // 读取并解析所有 Markdown 文件的元数据
 export function getSortedPostsData(): PostData[] {
+  const cacheKey = 'sorted-posts-data';
+  const cached = cache.get(cacheKey);
+  
+  if (cached && isCacheValid(cached.timestamp)) {
+    return cached.data as PostData[];
+  }
+
   const fileNames = fs.readdirSync(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
     const id = encodeURIComponent(fileName.replace(/\.md$/, ''));
@@ -30,31 +46,86 @@ export function getSortedPostsData(): PostData[] {
     };
   });
 
-  return allPostsData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const sortedData = allPostsData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  
+  // 缓存结果
+  cache.set(cacheKey, { data: sortedData, timestamp: Date.now() });
+  
+  return sortedData;
 }
 
 // 获取所有文章的 ID
 export function getAllPostIds() {
+  const cacheKey = 'all-post-ids';
+  const cached = cache.get(cacheKey);
+  
+  if (cached && isCacheValid(cached.timestamp)) {
+    return cached.data as Array<{ params: { slug: string } }>;
+  }
+
   const fileNames = fs.readdirSync(postsDirectory);
-  return fileNames.map((fileName) => ({
+  const postIds = fileNames.map((fileName) => ({
     params: {
       slug: encodeURIComponent(fileName.replace(/\.md$/, '')),
     },
   }));
+  
+  // 缓存结果
+  cache.set(cacheKey, { data: postIds, timestamp: Date.now() });
+  
+  return postIds;
+}
+
+// 获取所有文章的 slug（用于 generateStaticParams）
+export function getAllPostSlugs(): string[] {
+  const cacheKey = 'all-post-slugs';
+  const cached = cache.get(cacheKey);
+  
+  if (cached && isCacheValid(cached.timestamp)) {
+    return cached.data as string[];
+  }
+
+  const fileNames = fs.readdirSync(postsDirectory);
+  const slugs = fileNames.map((fileName) => 
+    encodeURIComponent(fileName.replace(/\.md$/, ''))
+  );
+  
+  // 缓存结果
+  cache.set(cacheKey, { data: slugs, timestamp: Date.now() });
+  
+  return slugs;
 }
 
 // 获取单篇文章的完整数据
 export async function getPostData(id: string): Promise<PostData> {
+  const cacheKey = `post-${id}`;
+  const cached = cache.get(cacheKey);
+  
+  if (cached && isCacheValid(cached.timestamp)) {
+    return cached.data as PostData;
+  }
+
   const decodedId = decodeURIComponent(id);
   const fullPath = path.join(postsDirectory, `${decodedId}.md`);
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  
+  try {
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    
+    // 解析 Markdown 元数据和内容
+    const { data, content } = matter(fileContents);
 
-  // 解析 Markdown 元数据和内容
-  const { data, content } = matter(fileContents);
-
-  return {
-    id,
-    content,
-    ...(data as Omit<PostData, 'id' | 'content'>),
-  };
+    const postData = {
+      id,
+      content,
+      ...(data as Omit<PostData, 'id' | 'content'>),
+    };
+    
+    // 缓存结果
+    cache.set(cacheKey, { data: postData, timestamp: Date.now() });
+    
+    return postData;
+  } catch (error) {
+    console.error(`Error reading post ${id}:`, error);
+    throw new Error(`Post not found: ${id}`);
+  }
 }

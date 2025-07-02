@@ -1,4 +1,4 @@
-import { getPostData } from "@/lib/posts";
+import { getPostData, getAllPostSlugs } from "@/lib/posts";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
@@ -7,45 +7,87 @@ import { formatDate } from "@/lib/utils";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import dynamic from "next/dynamic";
+import { Metadata } from "next";
 
-// 动态导入评论组件以避免SSR问题
-const CommentSection = dynamic(
-  () => import("@/components/comments/CommentSection"),
-  { ssr: false }
+// 懒加载评论组件
+const LazyCommentSection = dynamic(
+  () => import("@/components/comments/LazyCommentSection"),
+  { 
+    ssr: false,
+  }
 );
+
+// 生成静态参数
+export async function generateStaticParams() {
+  const slugs = getAllPostSlugs();
+  
+  return slugs.map((slug) => ({
+    slug: slug,
+  }));
+}
+
+// 生成元数据
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  try {
+    const postData = await getPostData(params.slug);
+    
+    return {
+      title: `${postData.title} | Kohaku`,
+      description: postData.summary,
+      openGraph: {
+        title: postData.title,
+        description: postData.summary,
+        type: 'article',
+        publishedTime: postData.date,
+      },
+    };
+  } catch {
+    return {
+      title: 'Post Not Found | Kohaku',
+      description: 'The requested blog post could not be found.',
+    };
+  }
+}
 
 export default async function BlogPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  const postData = await getPostData(params.slug);
+  try {
+    const postData = await getPostData(params.slug);
 
-  const options = {
-    theme: "one-dark-pro",
-    defaultLang: "plaintext",
-    grid: true,
-    showLanguage: true,
-    keepBackground: true,
-    lineNumbers: true,
-  };
+    // 优化后的 rehype-pretty-code 配置
+    const rehypeOptions = {
+      theme: "one-dark-pro",
+      defaultLang: "plaintext",
+      grid: false, // 减少DOM复杂度
+      showLanguage: true,
+      keepBackground: true,
+      lineNumbers: false, // 减少DOM节点
+    };
 
-  // 自定义组件
-  const components = {
-    // 图片组件
-    img: ({ src, alt, ...props }: { src?: string; alt?: string }) => (
-      <Zoom>
-        <img
-          src={src}
-          alt={alt}
-          className="w-full rounded-lg transition-opacity hover:opacity-90"
-          {...props}
-        />
-      </Zoom>
-    ),
-  };
+    // 自定义组件
+    const components = {
+      // 图片组件
+      img: ({ src, alt, ...props }: { src?: string; alt?: string }) => (
+        <Zoom>
+          <img
+            src={src}
+            alt={alt}
+            className="w-full rounded-lg transition-opacity hover:opacity-90"
+            loading="lazy"
+            {...props}
+          />
+        </Zoom>
+      ),
+    };
 
-  return (
+    return (
     <div className="max-w-[688px] mx-auto px-4 sm:px-6 lg:px-8">
       <article
         className="prose-zinc prose-lg dark:prose-invert max-w-none
@@ -79,8 +121,10 @@ export default async function BlogPage({
               options={{
                 mdxOptions: {
                   remarkPlugins: [remarkGfm],
-                  rehypePlugins: [[rehypePrettyCode, options]],
+                  rehypePlugins: [[rehypePrettyCode, rehypeOptions]],
+                  development: process.env.NODE_ENV === 'development',
                 },
+                parseFrontmatter: false, // 已在 getPostData 中处理
               }}
               components={components}
             />
@@ -89,9 +133,24 @@ export default async function BlogPage({
       </article>
 
       {/* 评论部分 */}
-      <div className=" border-gray-200 dark:border-gray-800 mt-8 pt-8">
-        <CommentSection postSlug={params.slug} />
+      <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8">
+        <LazyCommentSection postSlug={params.slug} />
       </div>
     </div>
-  );
+    );
+  } catch (error) {
+    console.error('Error loading post:', error);
+    return (
+      <div className="max-w-[688px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center py-12">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            文章未找到
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            抱歉，请求的文章不存在或已被删除。
+          </p>
+        </div>
+      </div>
+    );
+  }
 }
