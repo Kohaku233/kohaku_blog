@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import { getSortedPostsData, PostData } from "@/lib/posts";
-import ReactMarkdown from "react-markdown";
 import BlurFade from "@/components/ui/blur-fade";
 
 export default async function BlogPage() {
@@ -33,7 +32,7 @@ export default async function BlogPage() {
                       {formatDate(blog.date)}
                     </time>
                     <div className="text-lg text-gray-600 dark:text-gray-300">
-                      <ReactMarkdown>{blog.summary}</ReactMarkdown>
+                      {blog.summary}
                     </div>
                   </div>
                   <time className="hidden min-[600px]:block text-lg text-gray-500 dark:text-gray-400 shrink-0">

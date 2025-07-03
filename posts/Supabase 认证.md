@@ -2,6 +2,7 @@
 title: "集成 Supabase 认证"
 date: "2025-03-02"
 summary: "集成 Supabase 认证实现文章评论系统"
+slug: "supabase-authentication"
 ---
 
 在构建现代 Web 应用时，用户认证是一个基础但复杂的功能。本文将详细介绍如何利用 Supabase 提供的认证服务，为博客评论系统实现完整的用户认证流程。

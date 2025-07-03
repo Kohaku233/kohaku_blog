@@ -2,6 +2,7 @@
 title: "博客文章加载性能优化总结"
 date: "2025-07-02"
 summary: "本文档记录了针对博客文章加载缓慢问题的完整优化过程，以及各项优化措施的重要性分析。"
+slug: "performance-optimization"
 ---
 
 ## 📋 问题分析
