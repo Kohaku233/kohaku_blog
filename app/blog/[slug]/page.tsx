@@ -2,13 +2,14 @@ import { getPostData, getAllPostSlugs } from "@/lib/posts";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
 import BlurFade from "@/components/ui/blur-fade";
 import { formatDate } from "@/lib/utils";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import dynamic from "next/dynamic";
 import { Metadata } from "next";
-import { CodeBlock, InlineCode } from "@/components/ui/code-block";
+import { InlineCode, CodeBlock } from "@/components/ui/code-block";
 import { 
   Blockquote, 
   Table, 
@@ -20,6 +21,8 @@ import {
   Divider,
   HeadingWithAnchor 
 } from "@/components/ui/mdx-components";
+import { TableOfContents } from "@/components/ui/table-of-contents";
+import { MobileToc } from "@/components/ui/mobile-toc";
 
 // 懒加载评论组件
 const LazyCommentSection = dynamic(
@@ -73,17 +76,10 @@ export default async function BlogPage({
   try {
     const postData = await getPostData(params.slug);
 
-    // 优化后的 rehype-pretty-code 配置
+    // 简化的 rehype-pretty-code 配置
     const rehypeOptions = {
-      theme: {
-        dark: "github-dark",
-        light: "github-light"
-      },
-      defaultLang: "plaintext",
-      grid: true,
-      showLanguage: true,
-      keepBackground: false, // 使用自定义背景
-      lineNumbers: true,
+      theme: "github-dark",
+      keepBackground: true
     };
 
     // 自定义组件
@@ -103,10 +99,9 @@ export default async function BlogPage({
       // 代码块组件
       pre: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => {
         const language = props["data-language"] as string || "plaintext";
-        const title = props["data-title"] as string;
         return (
-          <CodeBlock language={language} title={title}>
-            {children}
+          <CodeBlock language={language} {...props}>
+            {children as React.ReactNode}
           </CodeBlock>
         );
       },
@@ -140,47 +135,67 @@ export default async function BlogPage({
     };
 
     return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <article className="prose prose-lg prose-zinc dark:prose-invert max-w-none">
-        {/* 文章头部 */}
-        <header className="mb-12 text-center border-b border-gray-200 dark:border-gray-800 pb-8">
-          <BlurFade>
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900 dark:text-gray-100 leading-tight">
-              {postData.title}
-            </h1>
-          </BlurFade>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="lg:flex lg:gap-8">
+        {/* 主内容区域 */}
+        <div className="lg:flex-1 lg:max-w-4xl">
+          <article className="prose prose-lg prose-zinc dark:prose-invert max-w-none">
+            {/* 文章头部 */}
+            <header className="mb-12 text-center border-b border-gray-200 dark:border-gray-800 pb-8">
+              <BlurFade>
+                <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900 dark:text-gray-100 leading-tight">
+                  {postData.title}
+                </h1>
+              </BlurFade>
 
-          <BlurFade delay={0.2}>
-            <div className="text-base text-gray-600 dark:text-gray-400 font-medium">
-              {formatDate(postData.date)}
+              <BlurFade delay={0.2}>
+                <div className="text-base text-gray-600 dark:text-gray-400 font-medium">
+                  {formatDate(postData.date)}
+                </div>
+              </BlurFade>
+            </header>
+
+            {/* 文章内容 */}
+            <BlurFade delay={0.3}>
+              <div className="prose-content">
+                <MDXRemote
+                  source={postData.content || ""}
+                  options={{
+                    mdxOptions: {
+                      remarkPlugins: [remarkGfm],
+                      rehypePlugins: [
+                        rehypeSlug,
+                        [rehypePrettyCode, rehypeOptions]
+                      ],
+                      development: process.env.NODE_ENV === 'development',
+                    },
+                    parseFrontmatter: false,
+                  }}
+                  // @ts-expect-error - Custom component types don't match MDX types exactly
+                  components={components}
+                />
+              </div>
+            </BlurFade>
+          </article>
+
+          {/* 评论部分 */}
+          <aside className="border-t border-gray-200 dark:border-gray-800 mt-16 pt-8">
+            <LazyCommentSection postSlug={params.slug} />
+          </aside>
+        </div>
+
+        {/* ToC 侧边栏 */}
+        {postData.toc && postData.toc.length > 0 && (
+          <aside className="hidden lg:block lg:w-64 lg:flex-shrink-0">
+            <div className="sticky top-8">
+              <TableOfContents toc={postData.toc} />
             </div>
-          </BlurFade>
-        </header>
+          </aside>
+        )}
+      </div>
 
-        {/* 文章内容 */}
-        <BlurFade delay={0.3}>
-          <div className="prose-content">
-            <MDXRemote
-              source={postData.content || ""}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [[rehypePrettyCode, rehypeOptions]],
-                  development: process.env.NODE_ENV === 'development',
-                },
-                parseFrontmatter: false,
-              }}
-              // @ts-expect-error - Custom component types don't match MDX types exactly
-              components={components}
-            />
-          </div>
-        </BlurFade>
-      </article>
-
-      {/* 评论部分 */}
-      <aside className="border-t border-gray-200 dark:border-gray-800 mt-16 pt-8">
-        <LazyCommentSection postSlug={params.slug} />
-      </aside>
+      {/* 移动端 ToC */}
+      <MobileToc toc={postData.toc || []} />
     </div>
     );
   } catch (error) {
