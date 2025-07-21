@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en">
       <body
-        className={`${ultralightitalic.variable} ${FOTMatisseProUB.variable} antialiased`}
+        className={`${ultralightitalic.variable} antialiased`}
       >
         <ThemeProvider attribute="class">
           <AuthProvider>
