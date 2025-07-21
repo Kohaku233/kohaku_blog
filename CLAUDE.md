@@ -1,5 +1,5 @@
 # CLAUDE.md
-
+不要有任何运行程序的操作
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## 项目概述

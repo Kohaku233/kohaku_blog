@@ -25,9 +25,9 @@ const nextConfig = {
   },
   
   // 编译器优化
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
+  // compiler: {
+  //   removeConsole: process.env.NODE_ENV === 'production',
+  // },
   
   // 性能优化
   poweredByHeader: false,
