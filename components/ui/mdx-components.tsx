@@ -132,6 +132,17 @@ export function Divider() {
   );
 }
 
+// 与 rehype-slug 完全一致的 slug 生成函数
+function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')           // 空格转横线
+    .replace(/[^\w\u4e00-\u9fa5-]/g, '') // 只保留字母、数字、中文、横线
+    .replace(/--+/g, '-')           // 多个横线合并为一个
+    .replace(/^-|-$/g, '');         // 移除首尾横线
+}
+
 // 标题锚点组件
 export function HeadingWithAnchor({ 
   level, 
@@ -146,16 +157,19 @@ export function HeadingWithAnchor({
 }) {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
   
+  // 如果没有提供 id，从 children 生成一个
+  const headingId = id || (typeof children === 'string' ? generateSlug(children) : undefined);
+  
   return (
     <Tag 
-      id={id} 
-      className="group relative scroll-mt-20"
+      id={headingId} 
+      className="group relative"
       {...props}
     >
       {children}
-      {id && (
+      {headingId && (
         <a 
-          href={`#${id}`}
+          href={`#${headingId}`}
           className="absolute -left-6 top-0 bottom-0 flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
           aria-label={`Link to ${children}`}
         >
