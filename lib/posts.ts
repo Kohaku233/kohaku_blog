@@ -4,6 +4,13 @@ import matter from 'gray-matter';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
+// ToC 项目类型
+export interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
 // 定义文章的类型
 export interface PostData {
   id: string;
@@ -13,6 +20,7 @@ export interface PostData {
   slug?: string;
   fileName?: string;
   content?: string;
+  toc?: TocItem[];
 }
 
 // 缓存对象
@@ -22,6 +30,40 @@ const CACHE_TTL = 1000 * 60 * 10; // 10分钟缓存
 // 检查缓存是否有效
 function isCacheValid(timestamp: number): boolean {
   return Date.now() - timestamp < CACHE_TTL;
+}
+
+// 与 rehype-slug 完全一致的 slug 生成函数
+function createSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')           // 空格转横线
+    .replace(/[^\w\u4e00-\u9fa5-]/g, '') // 只保留字母、数字、中文、横线
+    .replace(/--+/g, '-')           // 多个横线合并为一个
+    .replace(/^-|-$/g, '');         // 移除首尾横线
+}
+
+// 从 Markdown 内容中提取 ToC
+function extractTocFromMarkdown(content: string): TocItem[] {
+  const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+  const toc: TocItem[] = [];
+  let match;
+
+  while ((match = headingRegex.exec(content)) !== null) {
+    const level = match[1].length;
+    const text = match[2].trim();
+    
+    // 使用与 rehype-slug 一致的算法
+    const id = createSlug(text);
+
+    toc.push({
+      id,
+      text,
+      level
+    });
+  }
+
+  return toc;
 }
 
 // 读取并解析所有 Markdown 文件的元数据
@@ -132,7 +174,8 @@ export async function getPostData(id: string): Promise<PostData> {
         const postData = {
           id,
           content,
-          ...(data as Omit<PostData, 'id' | 'content'>),
+          toc: extractTocFromMarkdown(content),
+          ...(data as Omit<PostData, 'id' | 'content' | 'toc'>),
         };
         
         cache.set(cacheKey, { data: postData, timestamp: Date.now() });
@@ -151,7 +194,8 @@ export async function getPostData(id: string): Promise<PostData> {
     const postData = {
       id,
       content,
-      ...(data as Omit<PostData, 'id' | 'content'>),
+      toc: extractTocFromMarkdown(content),
+      ...(data as Omit<PostData, 'id' | 'content' | 'toc'>),
     };
     
     // 缓存结果
