@@ -65,7 +65,8 @@ export function CodeBlock({ children, language, title, className }: CodeBlockPro
       {/* 代码内容 */}
       <div className="relative">
         <pre
-          className={`overflow-x-auto rounded-t-none rounded-b-lg bg-gray-50 dark:bg-gray-900 p-4 text-sm leading-relaxed ${className || ""}`}
+          className={`overflow-x-auto rounded-t-none rounded-b-lg bg-gray-50 dark:bg-gray-900 text-sm leading-relaxed ${className || ""}`}
+          style={{ margin: '0' }}
         >
           {children}
         </pre>

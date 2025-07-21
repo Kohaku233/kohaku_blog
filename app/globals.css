@@ -105,33 +105,6 @@
   scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
 }
 
-/* rehype-pretty-code 语法高亮样式 */
-.prose-content pre[data-theme] {
-  @apply !bg-transparent;
-}
-
-.prose-content code[data-theme] {
-  @apply bg-transparent;
-}
-
-.prose-content pre[data-line-numbers] {
-  counter-reset: line;
-}
-
-.prose-content pre[data-line-numbers] > code > .line::before {
-  counter-increment: line;
-  content: counter(line);
-  @apply inline-block w-4 mr-4 text-right text-gray-400 dark:text-gray-500;
-}
-
-.prose-content pre .line {
-  @apply px-4;
-}
-
-.prose-content code .highlighted {
-  @apply bg-blue-100 dark:bg-blue-900/30 -mx-4 px-4;
-}
-
 .prose-content pre .word {
   @apply bg-blue-200 dark:bg-blue-800/50 px-1 rounded;
 }
@@ -241,5 +214,5 @@ html {
 .prose-content h4,
 .prose-content h5,
 .prose-content h6 {
-  @apply scroll-mt-20;
+  @apply scroll-mt-2;
 }

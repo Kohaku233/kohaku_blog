@@ -170,7 +170,7 @@ const config: Config = {
   						'line-height': '1.7',
   					},
   					'pre code': {
-  						'background': 'transparent',
+  						'background': 'transparent !important',
   						'padding': '0',
   						'border-radius': '0',
   						'color': 'inherit',
