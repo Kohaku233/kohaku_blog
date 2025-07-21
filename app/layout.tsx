@@ -13,12 +13,6 @@ const ultralightitalic = localFont({
   weight: "300", // 或者其他适合的权重
 });
 
-const FOTMatisseProUB = localFont({
-  src: "./fonts/FOTMatisseProUB.woff",
-  variable: "--font-fot-matisse-pro-ub",
-  weight: "700", // 或者其他适合的权重
-});
-
 export const metadata: Metadata = {
   title: "Kohaku",
   description: "Kohaku Personal Website",

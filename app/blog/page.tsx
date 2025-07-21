@@ -18,26 +18,27 @@ export default async function BlogPage() {
         </p>
       </BlurFade>
 
-      <div className="space-y-8">
+      <div className="space-y-10">
         {allPostsData.map((blog, index) => (
           <BlurFade key={blog.id} delay={0.3 + index * 0.1}>
-            <article className="border-gray-200 dark:border-gray-700 pb-8 last:border-b-0">
-              <Link href={`/blog/${blog.id}`} className="block group">
-                <div className="flex flex-col max-[600px]:flex-col min-[600px]:flex-row items-start min-[600px]:items-center justify-between gap-2 min-[600px]:gap-8">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-semibold group-hover:text-[#C3000F] transition-colors mb-2">
+            <article className="group cursor-pointer relative">
+              <Link href={`/blog/${blog.id}`} className="block">
+                {/* 悬停背景效果 */}
+                <div className="absolute inset-0 -mx-4 sm:-mx-6 lg:-mx-8 rounded-xl border border-transparent group-hover:border-gray-200 dark:group-hover:border-gray-700 group-hover:bg-gray-50/50 dark:group-hover:bg-gray-800/50 transition-all duration-300"></div>
+                
+                {/* 内容区域 */}
+                <div className="relative flex flex-col gap-3 py-6">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-2xl font-semibold group-hover:text-[#C3000F] transition-colors leading-tight flex-1">
                       {blog.title}
                     </h2>
-                    <time className="block min-[600px]:hidden text-lg text-gray-500 dark:text-gray-400 mb-2">
+                    <time className="text-sm text-gray-400 dark:text-gray-500 font-mono ml-4 shrink-0">
                       {formatDate(blog.date)}
                     </time>
-                    <div className="text-lg text-gray-600 dark:text-gray-300">
-                      {blog.summary}
-                    </div>
                   </div>
-                  <time className="hidden min-[600px]:block text-lg text-gray-500 dark:text-gray-400 shrink-0">
-                    {formatDate(blog.date)}
-                  </time>
+                  <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed mt-2">
+                    {blog.summary}
+                  </p>
                 </div>
               </Link>
             </article>
