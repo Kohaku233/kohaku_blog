@@ -24,9 +24,9 @@ import {
 import { TableOfContents } from "@/components/ui/table-of-contents";
 import { MobileToc } from "@/components/ui/mobile-toc";
 
-// 懒加载评论组件
-const LazyCommentSection = dynamic(
-  () => import("@/components/comments/LazyCommentSection"),
+// 懒加载 Giscus 评论组件
+const GiscusComments = dynamic(
+  () => import("@/components/GiscusComments"),
   { 
     ssr: false,
   }
@@ -180,7 +180,7 @@ export default async function BlogPage({
 
           {/* 评论部分 */}
           <aside className="border-t border-gray-200 dark:border-gray-800 mt-16 pt-8">
-            <LazyCommentSection postSlug={params.slug} />
+            <GiscusComments slug={params.slug} />
           </aside>
         </div>
 
