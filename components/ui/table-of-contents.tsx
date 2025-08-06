@@ -7,9 +7,10 @@ import { cn } from "@/lib/utils";
 interface TableOfContentsProps {
   toc: TocItem[];
   className?: string;
+  onItemClick?: () => void;
 }
 
-export function TableOfContents({ toc, className }: TableOfContentsProps) {
+export function TableOfContents({ toc, className, onItemClick }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
@@ -88,6 +89,9 @@ export function TableOfContents({ toc, className }: TableOfContentsProps) {
       // 延迟设置高亮，让滚动检测自然地处理切换
       // 这样可以避免原标题的闪烁
     }
+    
+    // 调用回调函数（用于关闭移动端抽屉）
+    onItemClick?.();
   };
 
   if (!toc || toc.length === 0) {

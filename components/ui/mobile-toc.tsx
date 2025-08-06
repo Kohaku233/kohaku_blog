@@ -22,7 +22,7 @@ export function MobileToc({ toc }: MobileTocProps) {
       {/* 浮动按钮 */}
       <button
         onClick={() => setIsOpen(true)}
-        className="lg:hidden fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-colors"
+        className="lg:hidden fixed top-8 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-colors"
         aria-label="打开目录"
       >
         <Menu className="w-6 h-6" />
@@ -60,6 +60,7 @@ export function MobileToc({ toc }: MobileTocProps) {
           <TableOfContents 
             toc={toc} 
             className="space-y-3"
+            onItemClick={() => setIsOpen(false)}
           />
         </div>
       </div>
