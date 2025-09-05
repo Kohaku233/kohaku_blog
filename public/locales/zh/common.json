@@ -1,0 +1,11 @@
+{
+  "intro": "你好，我是",
+  "description1": "我是一个长期主义者，现居东京",
+  "description2": "也是一名热爱阅读的软件工程师。",
+  "nav": {
+    "home": "主页",
+    "blog": "博客",
+    "projects": "项目",
+    "gallery": "图库"
+  }
+}

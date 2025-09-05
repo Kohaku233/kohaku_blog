@@ -15,8 +15,10 @@ import { navLinks, socialLinks } from "@/lib/resume";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { ModeToggle } from "./ModeToggle";
+import { useTranslation } from "react-i18next";
 
 export function Header() {
+  const { t } = useTranslation();
   return (
     <header className="fixed bottom-0 left-0 right-0 flex justify-center p-2 sm:p-4 z-50">
       <TooltipProvider>
@@ -29,14 +31,12 @@ export function Header() {
                      backdrop-blur-xl gap-1 shadow-lg shadow-black/10 dark:shadow-white/5"
         >
           {navLinks.map((item) => (
-            <DockIcon
-              key={item.label}
-            >
+            <DockIcon key={item.label}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
                     href={item.href}
-                    aria-label={item.label}
+                    aria-label={t(item.label)}
                     className={cn(
                       buttonVariants({ variant: "ghost", size: "icon" }),
                       "size-12 rounded-full"
@@ -46,7 +46,7 @@ export function Header() {
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{item.label}</p>
+                  <p>{t(item.label)}</p>
                 </TooltipContent>
               </Tooltip>
             </DockIcon>

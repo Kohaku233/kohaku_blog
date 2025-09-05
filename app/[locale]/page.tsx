@@ -1,11 +1,17 @@
+"use client";
+
 import RetroGrid from "@/components/ui/retro-grid";
 import SparklesText from "@/components/ui/sparkles-text";
 import Image from "next/image";
 import BlurFade from "@/components/ui/blur-fade";
 import { Tilt } from "@/components/ui/tilt";
+import { useTranslation } from "react-i18next";
 
 import { porfolio } from "@/lib/resume";
-export default async function HomePage() {
+
+export default function HomePage() {
+  const { t } = useTranslation();
+  const descriptions = [t("description1"), t("description2")];
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="relative flex h-[800px] w-full flex-col items-center justify-center overflow-hidden rounded-lg">
@@ -25,12 +31,12 @@ export default async function HomePage() {
         <div className="mt-20">
           <BlurFade>
             <h1 className="text-4xl font-bold text-black dark:text-white mb-4">
-              {porfolio.intro}
+              {t("intro")}
               <SparklesText className="inline-block" text={porfolio.name} />
             </h1>
           </BlurFade>
           <h1 className="text-2xl font-bold text-gray-600 dark:text-gray-300 ">
-            {porfolio.description.map((desc, index) => (
+            {descriptions.map((desc, index) => (
               <BlurFade delay={0.3 + index * 0.1} key={index}>
                 <p>{desc}</p>
               </BlurFade>

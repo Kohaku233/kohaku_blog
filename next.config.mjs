@@ -1,5 +1,8 @@
+import nextI18NextConfig from './next-i18next.config.js';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  i18n: nextI18NextConfig.i18n,
   // 图片优化配置
   images: {
     domains: ['avatars.githubusercontent.com'],
