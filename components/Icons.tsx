@@ -4,7 +4,7 @@ import {
   LuMoon,
   LuPenTool,
   LuSun,
-  LuUser,
+  LuCamera,
 } from "react-icons/lu";
 import { Sparkles } from "lucide-react";
 
@@ -17,7 +17,7 @@ export const Icons = {
   moon: (props: IconProps) => <LuMoon {...props} />,
   penTool: (props: IconProps) => <LuPenTool {...props} />,
   sun: (props: IconProps) => <LuSun {...props} />,
-  user: (props: IconProps) => <LuUser {...props} />,
+  pic: (props: IconProps) => <LuCamera {...props} />,
   linkedin: (props: IconProps) => (
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
       <title>LinkedIn</title>

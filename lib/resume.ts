@@ -10,7 +10,7 @@ export const navLinks = [
   { href: "/", icon: Icons.home, label: "Home" },
   { href: "/blog", icon: Icons.penTool, label: "Blog" },
   { href: "/projects", icon: Icons.box, label: "Projects" },
-  { href: "/gallery", icon: Icons.user, label: "Picture" },
+  { href: "/gallery", icon: Icons.pic, label: "Picture" },
 ];
 export const socialLinks = [
   {
