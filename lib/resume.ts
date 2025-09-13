@@ -5,10 +5,10 @@ export const porfolio = {
 };
 
 export const navLinks = [
-  { href: "/", icon: Icons.home, label: "nav.home" },
-  { href: "/blog", icon: Icons.penTool, label: "nav.blog" },
-  { href: "/projects", icon: Icons.box, label: "nav.projects" },
-  { href: "/gallery", icon: Icons.user, label: "nav.gallery" },
+  { href: "/", icon: Icons.home, label: "Home" },
+  { href: "/blog", icon: Icons.penTool, label: "Blog" },
+  { href: "/projects", icon: Icons.box, label: "Projects" },
+  { href: "/gallery", icon: Icons.pic, label: "Picture" },
 ];
 export const socialLinks = [
   {
