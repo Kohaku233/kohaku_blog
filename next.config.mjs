@@ -2,11 +2,16 @@
 const nextConfig = {
   // 图片优化配置
   images: {
-    domains: ['avatars.githubusercontent.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'i.imgur.com',
+        pathname: '/**',
+      }
+      ,
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
         pathname: '/**',
       }
     ],
