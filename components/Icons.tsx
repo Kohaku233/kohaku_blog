@@ -1,21 +1,19 @@
 import {
   LuBox,
-  LuHome,
+  LuHouse,
   LuMoon,
   LuPenTool,
   LuSun,
   LuUser,
 } from "react-icons/lu";
 import { Sparkles } from "lucide-react";
-// import { FaGithub, FaYoutube } from "react-icons/fa";
-// import { FaXTwitter } from "react-icons/fa6";
 
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export const Icons = {
   sparkles: <Sparkles className="size-4 text-blue-300" />,
   box: (props: IconProps) => <LuBox {...props} />,
-  home: (props: IconProps) => <LuHome {...props} />,
+  home: (props: IconProps) => <LuHouse {...props} />,
   moon: (props: IconProps) => <LuMoon {...props} />,
   penTool: (props: IconProps) => <LuPenTool {...props} />,
   sun: (props: IconProps) => <LuSun {...props} />,
