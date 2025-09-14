@@ -1,0 +1,11 @@
+{
+  "intro": "Hi, I'm",
+  "description1": "I am a long-termist who currently lives in Tokyo",
+  "description2": "and is also a software engineer who loves reading.",
+  "nav": {
+    "home": "Home",
+    "blog": "Blog",
+    "projects": "Projects",
+    "gallery": "Picture"
+  }
+}
